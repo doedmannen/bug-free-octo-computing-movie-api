@@ -63,10 +63,10 @@ typings/
 # ignore static 
 static/**
 backend-api/src/main/resources/static/
-backend-api/src/main/resources/static/**
+backend-api/src/main/resources/static/**/*.*
 ./backend-api/src/main/resources/static/
-./backend-api/src/main/resources/static/**
-
+./backend-api/src/main/resources/static/**/*.*
+/backend-api/src/main/resources/static/**
 
 HELP.md
 target/
