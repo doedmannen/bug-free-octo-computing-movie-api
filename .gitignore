@@ -60,6 +60,8 @@ typings/
 # next.js build output
 .next
 
+# ignore static 
+static/
 
 HELP.md
 target/
@@ -92,4 +94,5 @@ build/
 
 ### VS Code ###
 .vscode/
+
 
