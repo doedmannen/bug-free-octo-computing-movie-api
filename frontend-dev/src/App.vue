@@ -36,7 +36,6 @@
 </template>
 
 <script>
-import Movie from "";
 
 export default {
   name: "App",
