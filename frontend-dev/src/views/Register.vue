@@ -1,13 +1,13 @@
 <template>
-  <div class="home">
-    <h1>This is home</h1>
+  <div class="register">
+    <h1>This is the register page</h1>
   </div>
 </template>
 
 <script>
 
 export default {
-  name: 'login',
+  name: 'register',
 
   components: {
       //

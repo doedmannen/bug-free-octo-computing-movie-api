@@ -1,13 +1,13 @@
 <template>
-  <div class="home">
-    <h1>This is home</h1>
+  <div class="create-event">
+    <h1>This is create a new event page</h1>
   </div>
 </template>
 
 <script>
 
 export default {
-  name: 'login',
+  name: 'createEvent',
 
   components: {
       //

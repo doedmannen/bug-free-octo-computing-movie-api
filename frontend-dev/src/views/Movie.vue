@@ -1,13 +1,13 @@
 <template>
-  <div class="home">
-    <h1>This is home</h1>
+  <div class="movie">
+    <h1>This is a page for a specific movie</h1>
   </div>
 </template>
 
 <script>
 
 export default {
-  name: 'login',
+  name: 'movie',
 
   components: {
       //
