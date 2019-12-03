@@ -93,4 +93,3 @@ build/
 ### VS Code ###
 .vscode/
 
-./backend-api/src/main/resources/static/
