@@ -56,5 +56,11 @@ export default {
   data: () => ({
     //
   }),
+  beforeMount(){
+    // Fixes redirects from backend pahts
+    if(this.$route.query.redirect){
+      this.$router.push({ path: this.$route.query.redirect });
+    }
+  }
 };
 </script>
