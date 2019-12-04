@@ -1,14 +1,17 @@
 package com.movienights.api.controllers;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.movienights.api.entities.DbUser;
 import com.movienights.api.repos.DbUserRepo;
 import com.movienights.api.services.DbUserService;
 import org.apache.coyote.Response;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -58,8 +61,16 @@ public class DbUserController {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Couldn't find a user with that id");
         }
+    }
 
-
+    @PostMapping
+    public void registerUser(@RequestBody DbUser body) throws JsonProcessingException {
+        boolean user = dbUserService.checkIfUsernameExist(body.getUsername());
+        if (user) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
+        } else {
+            dbUserService.validateNewUser(body);
+        }
     }
 
 }

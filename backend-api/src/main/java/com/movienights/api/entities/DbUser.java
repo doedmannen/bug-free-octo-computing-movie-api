@@ -1,6 +1,7 @@
 package com.movienights.api.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
 import java.util.Set;
@@ -60,6 +61,7 @@ public class DbUser {
         return password;
     }
 
+    @JsonSetter("password")
     public void setPassword(String password) {
         this.password = password;
     }
