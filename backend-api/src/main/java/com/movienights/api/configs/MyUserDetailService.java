@@ -45,7 +45,7 @@ public class MyUserDetailService implements UserDetailsService {
         return toUserDetails(user);
     }
 
-    public void addUser(String name, String password){
+    private void addUser(String name, String password){
         DbUser u = new DbUser(name, getEncoder().encode(password));
         try {
             repository.save(u);
@@ -54,7 +54,7 @@ public class MyUserDetailService implements UserDetailsService {
         }
     }
 
-    public void addAdmin(String name, String password){
+    private void addAdmin(String name, String password){
         DbUser u = new DbUser(name, getEncoder().encode(password));
         u.setRoles(Set.of("ADMIN", "USER"));
         try {
@@ -70,16 +70,6 @@ public class MyUserDetailService implements UserDetailsService {
                 .withUsername(user.getUsername())
                 .password(user.getPassword())
                 .roles(user.getRoles().stream().toArray(String[]::new)).build();
-    }
-
-    public static UserDetails currentUserDetails(){
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        Authentication authentication = securityContext.getAuthentication();
-        if (authentication != null) {
-            Object principal = authentication.getPrincipal();
-            return principal instanceof UserDetails ? (UserDetails) principal : null;
-        }
-        return null;
     }
 
 }
