@@ -8,11 +8,9 @@ import java.util.Set;
 public class DbUser {
     @BsonId
     private ObjectId id;
-
     private String username;
-
-    @JsonIgnore
     private String password;
+    private String favoriteGenre;
     private Set<String> roles;
 
     public DbUser() {
@@ -33,6 +31,14 @@ public class DbUser {
         return id != null ? id.toHexString() : null;
     }
 
+    public String getFavoriteGenre() {
+        return favoriteGenre;
+    }
+
+    public void setFavoriteGenre(String favoriteGenre) {
+        this.favoriteGenre = favoriteGenre;
+    }
+
     public void setId(String hexId) {
         this.id = new ObjectId(hexId);
     }
@@ -49,6 +55,7 @@ public class DbUser {
         this.username = username;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return password;
     }

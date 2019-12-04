@@ -27,5 +27,11 @@ public class DbUserService {
         }
     }
 
+    public DbUser updateUser(DbUser user){
+        return userRepo.save(user);
+    }
+
+
+
 
 }

@@ -9,10 +9,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -47,6 +44,22 @@ public class DbUserController {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with that id was found");
         }
+    }
+
+    @PutMapping("{id}")
+    ResponseEntity<DbUser> updateUser(@PathVariable String id, @RequestBody DbUser body) {
+        DbUser user = dbUserService.getOneUser(id);
+
+        if (user != null) {
+            if (body.getFavoriteGenre() != null) {
+                user.setFavoriteGenre(body.getFavoriteGenre());
+            }
+            return new ResponseEntity<>(dbUserService.updateUser(user), HttpStatus.OK);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Couldn't find a user with that id");
+        }
+
+
     }
 
 }
