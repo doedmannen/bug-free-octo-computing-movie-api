@@ -1,10 +1,12 @@
 package com.movienights.api.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.movienights.api.dto.MovieSearchList;
 import com.movienights.api.entities.Movie;
 import com.movienights.api.repos.MovieRepo;
 import com.movienights.api.services.OmdbWebServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,11 +38,18 @@ public class MovieController {
 
 
     @GetMapping("search")
-    ResponseEntity<?> getMovie(@RequestParam("s") String searchForTitle) {
+    ResponseEntity<MovieSearchList> getMovie(@RequestParam("s") String searchForTitle) {
         searchForTitle = searchForTitle.replaceAll(" ", "+");
         searchForTitle = omdbWebServiceClient.getSearch(searchForTitle);
-        System.out.println(searchForTitle);
-        return ResponseEntity.notFound().build();//rendra
+
+        try{
+            MovieSearchList list = new ObjectMapper().readValue(searchForTitle, MovieSearchList.class);
+            System.out.println(searchForTitle);
+            return new ResponseEntity<>(list, HttpStatus.OK);
+        } catch (Exception e){
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
 }
