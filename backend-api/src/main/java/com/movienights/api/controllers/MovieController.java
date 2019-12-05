@@ -22,12 +22,13 @@ public class MovieController {
     ResponseEntity<Movie> getByTitle(@RequestParam String title) {
         Optional<Movie> movie = movieRepo.findByTitleIgnoreCase(title);
         if (!movie.isPresent()) {
+            title = title.replaceAll(" ", "+");
             omdbWebServiceClient.getFromOmdb(title);
-            if (!movie.isPresent()){
-                return ResponseEntity.notFound().build();
-            }
+            movie = movieRepo.findByTitleIgnoreCase(title);
+        }
+        if (movie.isPresent()){
             return ResponseEntity.ok(movie.get());
         }
-        return ResponseEntity.ok(movie.get());
+        return ResponseEntity.notFound().build();
     }
 }
