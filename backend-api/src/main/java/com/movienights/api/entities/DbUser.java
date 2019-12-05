@@ -13,6 +13,9 @@ public class DbUser {
     private String password;
     private String favoriteGenre;
     private Set<String> roles;
+    private String accessToken;
+    private String refreshToken;
+    private Long expiresAt;
 
     public DbUser() {
     }
@@ -72,6 +75,30 @@ public class DbUser {
 
     public void setRoles(Set<String> roles) {
         this.roles = roles;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public Long getExpiresAt() {
+        return expiresAt;
+    }
+
+    public void setExpiresAt(Long expiresAt) {
+        this.expiresAt = expiresAt;
     }
 }
 
