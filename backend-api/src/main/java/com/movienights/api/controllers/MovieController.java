@@ -21,7 +21,7 @@ public class MovieController {
     private OmdbWebServiceClient omdbWebServiceClient;
 
     @GetMapping()
-    ResponseEntity<Movie> getByTitle(@RequestParam String title) {
+    ResponseEntity<Movie> getByTitle(@RequestParam("t") String title) {
         Optional<Movie> movie = movieRepo.findByTitleIgnoreCase(title);
         if (!movie.isPresent()) {
             title = title.replaceAll(" ", "+");
@@ -34,12 +34,13 @@ public class MovieController {
         return ResponseEntity.notFound().build();
     }
 
-/*
-    @GetMapping("/search")
-    ResponseEntity<List<Movie>> getMovie(@RequestParam String title) {
-        String a = omdbWebServiceClient.getSearch(title);
-        System.out.println(a);
-        return ResponseEntity.notFound().build();
+
+    @GetMapping("search")
+    ResponseEntity<?> getMovie(@RequestParam("s") String searchForTitle) {
+        searchForTitle = searchForTitle.replaceAll(" ", "+");
+        searchForTitle = omdbWebServiceClient.getSearch(searchForTitle);
+        System.out.println(searchForTitle);
+        return ResponseEntity.notFound().build();//rendra
     }
-*/
+
 }

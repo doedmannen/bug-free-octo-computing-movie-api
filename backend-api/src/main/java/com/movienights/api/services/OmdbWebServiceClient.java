@@ -67,7 +67,6 @@ public class OmdbWebServiceClient {
             Movie m = orm.readValue(jsonResponse, Movie.class);
             movieRepo.save(m);
         } catch (Exception e){
-            e.printStackTrace();
         }
     }
 
