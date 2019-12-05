@@ -8,7 +8,7 @@
             <v-text-field
               v-model="username"
               :rules="nameRules"
-              :counter="12"
+              :counter="15"
               label="Username"
               required
             ></v-text-field>
@@ -20,7 +20,7 @@
         </v-row>
       </v-container>
     </v-form>
-    <v-btn>Register</v-btn>
+    <v-btn @click="registerUser">Register</v-btn>
   </div>
 </template>
 
@@ -39,13 +39,33 @@ export default {
     password: "",
     nameRules: [
       v => !!v || "Username is required",
-      v => v.length <= 10 || "Username must be less than 10 characters"
+      v => v.length >= 5 || "Username must be atleast 5 characters",
+      v => v.length <= 10 || "Username must be less than 15 characters"
     ],
     passwordRules: [
       v => !!v || "Password is required",
-      v => v.length > 2 || "Password must be more then 2 characters"
-    ]
+      v => v.length >= 5 || "Password must be atleast 5 characters"
+    ],
+
   })
+  ,
+
+  methods: {
+
+    async registerUser() {
+      let result = await fetch('api/users', {
+        method: 'POST',
+        headers: {'Content-type' : 'application/json'},
+        body: JSON.stringify({username: this.username, password: this.password})
+      })
+
+    result = await result.json()
+
+    console.log(result)
+
+    }
+
+  }
 };
 </script>
 
