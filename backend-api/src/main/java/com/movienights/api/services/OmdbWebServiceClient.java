@@ -18,21 +18,13 @@ import java.net.URL;
 public class OmdbWebServiceClient {
 
     private final String SEARCH_URL = "https://www.omdbapi.com/?t=TITLE&apikey=APIKYE";
+    private final String SEARCH =  "http://www.omdbapi.com/?apikey=APIKYE&s=TITLE";
 
     @Autowired
     MovieRepo movieRepo;
-/*
-    //@PostConstruct
-    public void init(){
-        String jsonResponse = searchMovieByTitle("batman", ApiKeys.ombiKey);
-        System.out.println(jsonResponse);
-        saveToDb(jsonResponse);
-    }
-*/
 
     public void getFromOmdb(String title){
         String jsonResponse = searchMovieByTitle(title, ApiKeys.ombiKey);
-        System.out.println(jsonResponse);
         saveToDb(jsonResponse);
     }
 
@@ -69,7 +61,6 @@ public class OmdbWebServiceClient {
         return sendGetRequest(requestUrl);
     }
 
-
     private void saveToDb(String jsonResponse) {
         try{
             ObjectMapper orm = new ObjectMapper();
@@ -80,4 +71,14 @@ public class OmdbWebServiceClient {
         }
     }
 
+    public String getSearch(String title){
+        String jsonResponse = sertchMovies(title, ApiKeys.ombiKey);
+        System.out.println(jsonResponse);
+        return jsonResponse;
+    }
+
+    private String sertchMovies(String title, String key){
+        String requestUrl = SEARCH.replaceAll("TITLE", title).replaceAll("APIKYE",key);
+        return sendGetRequest(requestUrl);
+    }
 }
