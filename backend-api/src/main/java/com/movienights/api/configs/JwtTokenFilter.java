@@ -24,7 +24,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String token = jwtTokenProvider.resolveToken(httpServletRequest);
-        System.out.println(httpServletRequest.getRequestURI());
         if(
                 !httpServletRequest.getRequestURI().equalsIgnoreCase("/api/auth/refresh")
         ){
