@@ -5,9 +5,6 @@ import com.movienights.api.repos.DbUserRepo;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -44,6 +41,7 @@ public class MyUserDetailService implements UserDetailsService {
         }
         return toUserDetails(user);
     }
+
 
     private void addUser(String name, String password){
         DbUser u = new DbUser(name, getEncoder().encode(password));

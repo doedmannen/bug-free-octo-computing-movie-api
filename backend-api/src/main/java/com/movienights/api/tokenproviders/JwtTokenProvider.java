@@ -34,7 +34,7 @@ public class JwtTokenProvider {
         secret = Base64.getEncoder().encodeToString(secret.getBytes());
     }
 
-    public String createToken(String username, Set<String> roles){
+    public String createToken(String username, Set<String> roles) {
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("auth", roles.stream().map(s -> new SimpleGrantedAuthority("ROLE_" + s)).collect(Collectors.toList()));
 
@@ -60,6 +60,11 @@ public class JwtTokenProvider {
 
     public String getUsername(String token){
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public String getUserNameForTokenRenewal(String token) {
+        Claims claims = Jwts.parser().setSigningKey(secret).setAllowedClockSkewSeconds(604800).parseClaimsJws(token).getBody();
+        return claims.getSubject();
     }
 
     public String resolveToken(HttpServletRequest request){
