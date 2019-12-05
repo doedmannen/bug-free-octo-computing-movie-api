@@ -49,31 +49,29 @@ public class DbUserService {
         return user != null;
     }
 
-    public void validateNewUser(DbUser user) throws JsonProcessingException {
+    public ResponseEntity<DbUser> validateNewUser(DbUser user) throws JsonProcessingException {
         HashMap<String, String> map = new HashMap<>();
         if (user.getUsername().equals("") || user.getUsername().length() < 5 || user.getUsername().length() > 30) {
             map.put("username", "Username has to be between 5-30 characters");
         }
-        if(user.getPassword().equals("") || user.getPassword().length() < 5 || user.getPassword().length() > 30)
+        if (user.getPassword().equals("") || user.getPassword().length() < 5 || user.getPassword().length() > 30)
             map.put("password", "Password has to be between 5-30 characters");
         if (map.isEmpty()) {
-            registerUser(user);
+            return registerUser(user);
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, new ObjectMapper().writeValueAsString(map));
 
         }
     }
 
-    private ResponseEntity<DbUser> registerUser(DbUser user) {
+    ResponseEntity<DbUser> registerUser(DbUser user) {
         DbUser newUser = new DbUser(user.getUsername(), userService.getEncoder().encode(user.getPassword()));
-        System.out.println(newUser);
         try {
-            return new ResponseEntity<>(userRepo.save(newUser), HttpStatus.OK);
+            userRepo.save(newUser);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return null;
+        return new ResponseEntity<>(newUser, HttpStatus.OK);
     }
-
 
 }

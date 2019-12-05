@@ -64,12 +64,12 @@ public class DbUserController {
     }
 
     @PostMapping
-    public void registerUser(@RequestBody DbUser body) throws JsonProcessingException {
+    public ResponseEntity<DbUser> registerUser(@RequestBody DbUser body) throws JsonProcessingException {
         boolean user = dbUserService.checkIfUsernameExist(body.getUsername());
         if (user) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
         } else {
-            dbUserService.validateNewUser(body);
+            return dbUserService.validateNewUser(body);
         }
     }
 
