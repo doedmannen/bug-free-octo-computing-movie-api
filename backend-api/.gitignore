@@ -32,3 +32,4 @@ build/
 
 
 /src/main/resources/static/**
+/src/main/java/com/movienights/api/keys/**
