@@ -53,13 +53,13 @@ export default {
     bok() {
       //TODO
     },
-    async getMovie() {
-      let url = window.location.origin + "/api/movie/?t=iron man";
+    async getMovie() { 
+      let url = window.location.origin + "/api/movie/?t=" + this.$route.params.title;
       let response = await fetch(url, {
         method: "GET",
         headers: {
           Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiYXV0aCI6W3siYXV0aG9yaXR5IjoiUk9MRV9VU0VSIn1dLCJpYXQiOjE1NzU4ODE4ODIsImV4cCI6MTgzODg1NjYyNX0.SUbAdLlgsQMAn54EsgyLBBJfd8Nn07YO7eWc0DtenJs",
+            "Bearer "+this.$store.state.token,
           "Content-Type": "application/json"
         }
       });
@@ -73,24 +73,3 @@ export default {
   }
 };
 </script>
-
-<style>
-/*
-async
-let url = window.location.origin + "/api/YOUR_PATH_FOR_FETCH";
-let response = await fetch(url, { 
-   method: 'GET', 
-   headers: {
-     'Authorization': 'Bearer '+localStorage.getItem("token"), 
-     'Content-Type': 'application/json'
-   }, 
-   body: JSON.stringify({  })
- });
-if(response.status == 200)
-    return await response.json();
-else 
-    return "något är fel";
-
-
- */
-</style>
