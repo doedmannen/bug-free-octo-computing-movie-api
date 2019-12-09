@@ -6,6 +6,8 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.movienights.api.keys.ApiKeys;
+import com.movienights.api.services.GoogleAuthService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,39 +22,18 @@ import static com.movienights.api.keys.ApiKeys.CLIENT_SECRET;
 @RequestMapping("api/googleauth")
 public class GoogleAuthController {
 
+    @Autowired
+    GoogleAuthService googleAuthService;
+
     @PostMapping("/storeauthcode")
-    ResponseEntity<GoogleTokenResponse> storeauthcode(@RequestBody String code, @RequestHeader("X-Requested-With") String encoding) {
+    ResponseEntity<GoogleTokenResponse> storeAuthCode(@RequestBody String code, @RequestHeader("X-Requested-With") String encoding) {
         if (encoding == null || encoding.isEmpty()) {
 //             Without the `X-Requested-With` header, this request could be forged. Aborts.
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error, wrong headers");
+        } else {
+            GoogleTokenResponse tokenResponse = googleAuthService.getTokens(code);
+            return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
         }
-
-        GoogleTokenResponse tokenResponse = null;
-        try {
-            tokenResponse = new GoogleAuthorizationCodeTokenRequest(
-                    new NetHttpTransport(),
-                    JacksonFactory.getDefaultInstance(),
-                    "https://www.googleapis.com/oauth2/v4/token",
-                    CLIENT_ID,
-                    CLIENT_SECRET,
-                    code,
-                    "http://localhost:8080") // Make sure you set the correct port
-                    .execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Store these 3 in your DB
-        String accessToken = tokenResponse.getAccessToken();
-        String refreshToken = tokenResponse.getRefreshToken();
-        Long expiresAt = System.currentTimeMillis() + (tokenResponse.getExpiresInSeconds() * 1000);
-        tokenResponse.setExpiresInSeconds(expiresAt);
-
-        // Debug purpose only
-        System.out.println("accessToken: " + accessToken);
-        System.out.println("refreshToken: " + refreshToken);
-        System.out.println("expiresAt: " + expiresAt);
-
-        return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
     }
+
 }

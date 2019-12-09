@@ -2,6 +2,7 @@ package com.movienights.api.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.movienights.api.configs.MyUserDetailService;
 import com.movienights.api.entities.DbUser;
 import com.movienights.api.repos.DbUserRepo;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,6 +29,9 @@ public class DbUserService {
     @Autowired
     MyUserDetailService userService;
 
+    @Autowired
+    GoogleAuthService googleAuthService;
+
     public List<DbUser> getAllUsers() {
         return userRepo.findAll();
     }
@@ -38,6 +43,17 @@ public class DbUserService {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /** @noinspection deprecation*/
+    public void refreshAccessToken(String username){
+        DbUser user = userRepo.findDistinctFirstByUsernameIgnoreCase(username);
+
+        GoogleCredential credential = googleAuthService.getRefreshedCredentials(user.getRefreshToken());
+        Long expiresAt = Calendar.getInstance().getTimeInMillis() + (credential.getExpiresInSeconds() * 1000);
+        user.setAccessToken(credential.getAccessToken());
+        user.setExpiresAt(expiresAt);
+        userRepo.save(user);
     }
 
     public DbUser updateUser(DbUser user) {
