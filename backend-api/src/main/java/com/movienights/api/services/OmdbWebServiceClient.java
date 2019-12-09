@@ -1,10 +1,15 @@
 package com.movienights.api.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.movienights.api.dto.MovieSearchList;
 import com.movienights.api.entities.Movie;
+import com.movienights.api.entities.SearchResult;
 import com.movienights.api.keys.ApiKeys;
 import com.movienights.api.repos.MovieRepo;
+import com.movienights.api.repos.SearchResultRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,10 +23,13 @@ import java.net.URL;
 public class OmdbWebServiceClient {
 
     private final String SEARCH_URL = "https://www.omdbapi.com/?t=TITLE&apikey=APIKYE";
-    private final String SEARCH =  "http://www.omdbapi.com/?apikey=APIKYE&s=TITLE";
+    private final String SEARCH =  "http://www.omdbapi.com/?apikey=APIKYE&s=SEARCHWORD&page=PAGENR";
 
     @Autowired
     MovieRepo movieRepo;
+
+    @Autowired
+    SearchResultRepo searchResultRepo;
 
     public void getFromOmdb(String title){
         String jsonResponse = searchMovieByTitle(title, ApiKeys.ombiKey);
@@ -70,14 +78,26 @@ public class OmdbWebServiceClient {
         }
     }
 
-    public String getSearch(String title){
-        String jsonResponse = sertchMovies(title, ApiKeys.ombiKey);
-        System.out.println(jsonResponse);
-        return jsonResponse;
+    public void getSearch(String title, String page){
+        if (searchResultRepo.findDistinctFirstByPath(title+"&page="+page) != null){
+            return;
+        }
+        String jsonResponse = sertchMovies(title, ApiKeys.ombiKey, page);
+        try{
+            MovieSearchList list = new ObjectMapper().readValue(jsonResponse, MovieSearchList.class);
+            SearchResult searchResult = new SearchResult();
+            searchResult.setPath(title+"&page="+page);
+            searchResult.setResult(list);
+            searchResultRepo.save(searchResult);
+        } catch (Exception e){
+        }
     }
 
-    private String sertchMovies(String title, String key){
-        String requestUrl = SEARCH.replaceAll("TITLE", title).replaceAll("APIKYE",key);
+    private String sertchMovies(String title, String key, String page){
+        String requestUrl = SEARCH.replaceAll("SEARCHWORD", title).replaceAll("APIKYE",key).replaceAll("PAGENR", page);
         return sendGetRequest(requestUrl);
     }
+
+
+
 }

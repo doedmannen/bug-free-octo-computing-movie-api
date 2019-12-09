@@ -3,7 +3,9 @@ package com.movienights.api.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.movienights.api.dto.MovieSearchList;
 import com.movienights.api.entities.Movie;
+import com.movienights.api.entities.SearchResult;
 import com.movienights.api.repos.MovieRepo;
+import com.movienights.api.repos.SearchResultRepo;
 import com.movienights.api.services.OmdbWebServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +23,8 @@ public class MovieController {
     private MovieRepo movieRepo;
     @Autowired
     private OmdbWebServiceClient omdbWebServiceClient;
-
+    @Autowired
+    private SearchResultRepo searchResultRepo;
     @GetMapping()
     ResponseEntity<Movie> getByTitle(@RequestParam("t") String title) {
         Optional<Movie> movie = movieRepo.findByTitleIgnoreCase(title);
@@ -38,16 +41,14 @@ public class MovieController {
 
 
     @GetMapping("search")
-    ResponseEntity<MovieSearchList> getMovie(@RequestParam("s") String searchForTitle) {
+    ResponseEntity<SearchResult> getMovie(@RequestParam("s") String searchForTitle, @RequestParam("p") int page) {
         searchForTitle = searchForTitle.replaceAll(" ", "+");
-        searchForTitle = omdbWebServiceClient.getSearch(searchForTitle);
 
-        try{
-            MovieSearchList list = new ObjectMapper().readValue(searchForTitle, MovieSearchList.class);
-            return new ResponseEntity<>(list, HttpStatus.OK);
-        } catch (Exception e){
+        omdbWebServiceClient.getSearch(searchForTitle, "" + page);
+        SearchResult searchResult = searchResultRepo.findDistinctFirstByPath(searchForTitle+"&page="+page);
+        if(searchResult != null){
+            return new ResponseEntity<>(searchResult,HttpStatus.OK);
         }
-
         return ResponseEntity.notFound().build();
     }
 
