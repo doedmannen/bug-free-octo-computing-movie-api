@@ -44,7 +44,6 @@ public class MovieController {
 
         try{
             MovieSearchList list = new ObjectMapper().readValue(searchForTitle, MovieSearchList.class);
-            System.out.println(searchForTitle);
             return new ResponseEntity<>(list, HttpStatus.OK);
         } catch (Exception e){
         }

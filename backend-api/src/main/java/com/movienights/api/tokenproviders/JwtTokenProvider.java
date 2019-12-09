@@ -24,7 +24,7 @@ public class JwtTokenProvider {
 
     private String secret = "SOMEKINDOFSHITTYKEYGOESHERE";
 
-    private long validityMillis = 3600000;
+    private long validityMillis = 2629743000L;
 
     @Autowired
     MyUserDetailService userDetailService;
