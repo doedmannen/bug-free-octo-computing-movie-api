@@ -26,6 +26,15 @@ public class DbUser {
         this.roles = Set.of("USER");
     }
 
+    public DbUser(String username, String password, String accessToken, String refreshToken, long expiresAt) {
+        this.username = username;
+        this.password = password;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.expiresAt = expiresAt;
+        this.roles = Set.of("USER");
+    }
+
     @JsonIgnore
     public ObjectId getObjectId(){
         return id;

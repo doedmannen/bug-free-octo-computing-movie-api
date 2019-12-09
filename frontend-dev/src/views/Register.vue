@@ -64,6 +64,10 @@ export default {
     valid: false,
     username: "",
     password: "",
+    accessToken: "weeeo",
+    refreshToken: "",
+    expiresAt: "",
+
     nameRules: [
       v => !!v || "Username is required",
       v => v.length >= 5 || "Username must be atleast 5 characters",
@@ -76,12 +80,20 @@ export default {
   }),
   methods: {
     async registerUser() {
+      console.log(this.username)
+      console.log(this.password)
+      console.log(this.accessToken)
+      console.log(this.refreshToken)
+      console.log(this.expiresAt)
       let result = await fetch("api/users/", {
         method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({
           username: this.username,
-          password: this.password
+          password: this.password,
+          accessToken: this.accessToken,
+          refreshToken: this.refreshToken,
+          expiresAt: this.expiresAt
         })
       });
 
@@ -97,23 +109,31 @@ export default {
     async signInCallback(authResult) {
       console.log("authResult", authResult);
 
-      // if (authResult["code"]) {
-      //   // Hide the sign-in button now that the user is authorized
-      //   // $("#signinButton").hide();
+      if (authResult["code"]) {
+        // Hide the sign-in button now that the user is authorized
+        // $("#signinButton").hide();
 
-      //   // Send the code to the server
-      //   let result = await fetch("/storeauthcode", {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/octet-stream; charset=utf-8",
-      //       "X-Requested-With": "XMLHttpRequest"
-      //     },
-      //     body: authResult["code"]
-      //   });
-      //   // etc...
-      // } else {
-      //   // There was an error.
-      // }
+        // Send the code to the server
+        let result = await fetch("api/googleauth/storeauthcode", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/octet-stream; charset=utf-8",
+            "X-Requested-With": "XMLHttpRequest"
+          },
+          body: authResult["code"]
+        });
+        
+        result = await result.json();
+
+        console.log(result)
+
+        this.accessToken = result.access_token;
+        this.refreshToken = result.refresh_token;
+        this.expiresAt = result.expires_in;
+        
+      } else {
+        // There was an error.
+      }
     }
   }
 };

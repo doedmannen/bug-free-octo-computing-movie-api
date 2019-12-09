@@ -65,7 +65,7 @@ public class DbUserService {
     }
 
     ResponseEntity<DbUser> registerUser(DbUser user) {
-        DbUser newUser = new DbUser(user.getUsername(), userService.getEncoder().encode(user.getPassword()));
+        DbUser newUser = new DbUser(user.getUsername(), userService.getEncoder().encode(user.getPassword()), user.getAccessToken(), user.getRefreshToken(), user.getExpiresAt());
         try {
             userRepo.save(newUser);
         } catch (Exception ex) {
