@@ -50,6 +50,7 @@ export default {
     if (window.location.search.startsWith("?redirect=")) {
       this.$router.push({ path: window.location.search.replace("?redirect=","") });
     }
+    this.$store.dispatch("tokenLookup");
   }
 };
 </script>
