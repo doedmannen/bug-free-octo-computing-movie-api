@@ -15,7 +15,6 @@
                 <v-row>
                   <v-col cols="12" md="12">
                     <v-text-field
-
                       v-model="username"
                       :rules="nameRules"
                       :counter="15"
@@ -41,17 +40,10 @@
 
         <v-stepper-content step="2">
           <v-card class="mb-12" color="grey lighten-4" height="200px">
-            <h1>waooo</h1>
+            <v-btn @click="authGoogle">Link Google account</v-btn>
           </v-card>
           <v-btn color="primary" @click="e1 = 1">Back</v-btn>
           <v-btn @click="registerUser">Register</v-btn>
-        </v-stepper-content>
-        <v-stepper-content step="3">
-          <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card>
-
-          <v-btn color="primary" @click="e1 = 1">Continue</v-btn>
-
-          <v-btn text>Cancel</v-btn>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -75,7 +67,7 @@ export default {
     nameRules: [
       v => !!v || "Username is required",
       v => v.length >= 5 || "Username must be atleast 5 characters",
-      v => v.length <= 10 || "Username must be less than 15 characters"
+      v => v.length <= 15 || "Username must be less than 15 characters"
     ],
     passwordRules: [
       v => !!v || "Password is required",
@@ -96,6 +88,32 @@ export default {
       result = await result.json();
 
       console.log(result);
+    },
+
+    authGoogle() {
+      window.auth2.grantOfflineAccess().then(this.signInCallback);
+    },
+
+    async signInCallback(authResult) {
+      console.log("authResult", authResult);
+
+      // if (authResult["code"]) {
+      //   // Hide the sign-in button now that the user is authorized
+      //   // $("#signinButton").hide();
+
+      //   // Send the code to the server
+      //   let result = await fetch("/storeauthcode", {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/octet-stream; charset=utf-8",
+      //       "X-Requested-With": "XMLHttpRequest"
+      //     },
+      //     body: authResult["code"]
+      //   });
+      //   // etc...
+      // } else {
+      //   // There was an error.
+      // }
     }
   }
 };
