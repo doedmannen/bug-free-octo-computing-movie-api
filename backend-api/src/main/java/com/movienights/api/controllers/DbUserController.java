@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.movienights.api.entities.DbUser;
 import com.movienights.api.repos.DbUserRepo;
 import com.movienights.api.services.DbUserService;
+import com.movienights.api.services.GoogleAuthService;
 import org.apache.coyote.Response;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,11 @@ public class DbUserController {
             }
         }
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @PutMapping("refresh-access-token")
+    public void refreshaccesstoken(){
+                dbUserService.refreshAccessToken("Pelle");
     }
 
     @GetMapping("{id}")

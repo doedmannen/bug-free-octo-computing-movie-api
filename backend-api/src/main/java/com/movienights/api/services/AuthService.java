@@ -46,6 +46,7 @@ public class AuthService {
 
     public ResponseEntity<TokenResponse> refresh(HttpServletRequest request){
         String token = tokenProvider.resolveToken(request);
+        String token2 = tokenProvider.getUsername(request);
         String username = tokenProvider.getUserNameForTokenRenewal(token);
         DbUser user = userRepo.findDistinctFirstByUsernameIgnoreCase(username);
         if(user != null) {
