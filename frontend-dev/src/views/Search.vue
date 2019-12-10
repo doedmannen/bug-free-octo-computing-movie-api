@@ -12,7 +12,7 @@
              <div v-for="(value) in searchResult.result.Search" :key="value.imbdID">
               <p>{{value.Title}}</p>
               <v-col cols="8">
-                <v-img :src="value.Poster === 'N/A' ? `https://image.shutterstock.com/image-vector/no-image-available-icon-template-260nw-1036735678.jpg` : value.Poster" ></v-img>
+                <v-img :src="value.Poster === 'N/A' ? `https://image.shutterstock.com/image-vector/no-image-available-icon-template-260nw-1036735678.jpg` : value.Poster" @click="goTo(value.Title)"></v-img>
           </v-col>
           <p>{{value.Year}}</p>
             </div>
@@ -45,10 +45,12 @@ export default {
     input:"",
 
   }),
-  mounted() {
-  },
   methods:{
-    nextpage(){},
+    nextpage(){
+    },
+    goTo(title){
+      window.location.href = window.location.origin + "/movie/"+title;
+    },
     search(){
       this.getSearch();
     },
