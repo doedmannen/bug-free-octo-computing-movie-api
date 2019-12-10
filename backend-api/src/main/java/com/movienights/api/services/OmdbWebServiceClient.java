@@ -18,6 +18,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Optional;
 
 @Service
 public class OmdbWebServiceClient {
@@ -31,9 +32,9 @@ public class OmdbWebServiceClient {
     @Autowired
     SearchResultRepo searchResultRepo;
 
-    public void getFromOmdb(String title){
+    public Optional<Movie> getFromOmdb(String title){
         String jsonResponse = searchMovieByTitle(title, ApiKeys.ombiKey);
-        saveToDb(jsonResponse);
+        return saveToDb(jsonResponse);
     }
 
     private String sendGetRequest(String requestUrl){
@@ -69,13 +70,14 @@ public class OmdbWebServiceClient {
         return sendGetRequest(requestUrl);
     }
 
-    private void saveToDb(String jsonResponse) {
+    private Optional<Movie> saveToDb(String jsonResponse) {
         try{
             ObjectMapper orm = new ObjectMapper();
             Movie m = orm.readValue(jsonResponse, Movie.class);
-            movieRepo.save(m);
+            return Optional.of(movieRepo.save(m));
         } catch (Exception e){
         }
+        return Optional.empty();
     }
 
     public void getSearch(String title, String page){
