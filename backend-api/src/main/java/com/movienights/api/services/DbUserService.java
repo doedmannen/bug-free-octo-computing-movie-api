@@ -7,16 +7,14 @@ import com.movienights.api.entities.DbUser;
 import com.movienights.api.repos.DbUserRepo;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class DbUserService {
@@ -25,7 +23,7 @@ public class DbUserService {
     DbUserRepo userRepo;
 
     @Autowired
-    MyUserDetailService userService;
+    MyUserDetailService userDetailService;
 
     public List<DbUser> getAllUsers() {
         return userRepo.findAll();
@@ -65,13 +63,19 @@ public class DbUserService {
     }
 
     ResponseEntity<DbUser> registerUser(DbUser user) {
-        DbUser newUser = new DbUser(user.getUsername(), userService.getEncoder().encode(user.getPassword()));
+        DbUser newUser = new DbUser(user.getUsername(), userDetailService.getEncoder().encode(user.getPassword()));
         try {
             userRepo.save(newUser);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return new ResponseEntity<>(newUser, HttpStatus.OK);
+    }
+
+    void revokeUserJwt(String username) {
+        DbUser user = userRepo.findDistinctFirstByUsernameIgnoreCase(username);
+        user.setJwtSalt(UUID.randomUUID());
+        userRepo.save(user);
     }
 
 }
