@@ -1,7 +1,6 @@
 package com.movienights.api.services;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleRefreshTokenRequest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -47,14 +46,12 @@ public class GoogleAuthService {
     }
 
 
-    /** @noinspection deprecation*/
-    public GoogleCredential getRefreshedCredentials(String refreshCode) {
+    public GoogleTokenResponse getRefreshedCredentials(String refreshCode) {
         try {
             GoogleTokenResponse response = new GoogleRefreshTokenRequest(
                     new NetHttpTransport(), JacksonFactory.getDefaultInstance(), refreshCode, CLIENT_ID, CLIENT_SECRET)
                     .execute();
-
-            return new GoogleCredential().setAccessToken(response.getAccessToken());
+            return response;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;

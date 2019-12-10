@@ -3,6 +3,7 @@ package com.movienights.api.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.movienights.api.configs.MyUserDetailService;
 import com.movienights.api.entities.DbUser;
 import com.movienights.api.repos.DbUserRepo;
@@ -45,11 +46,13 @@ public class DbUserService {
         }
     }
 
-    /** @noinspection deprecation*/
-    public void refreshAccessToken(String username){
+    /**
+     * @noinspection deprecation
+     */
+    public void refreshAccessToken(String username) {
         DbUser user = userRepo.findDistinctFirstByUsernameIgnoreCase(username);
 
-        GoogleCredential credential = googleAuthService.getRefreshedCredentials(user.getRefreshToken());
+        GoogleTokenResponse credential = googleAuthService.getRefreshedCredentials(user.getRefreshToken());
         Long expiresAt = Calendar.getInstance().getTimeInMillis() + (credential.getExpiresInSeconds() * 1000);
         user.setAccessToken(credential.getAccessToken());
         user.setExpiresAt(expiresAt);
