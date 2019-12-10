@@ -1,7 +1,10 @@
 package com.movienights.api.tokenproviders;
 
 import com.movienights.api.configs.MyUserDetailService;
+import com.movienights.api.entities.DbUser;
 import com.movienights.api.exceptions.CustomException;
+import com.movienights.api.repos.DbUserRepo;
+import com.movienights.api.watchlists.JwtWatchList;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Component
@@ -26,17 +30,24 @@ public class JwtTokenProvider {
 
     private long validityMillis = 2629743000L;
 
+    private ConcurrentHashMap<String, Long> session = new ConcurrentHashMap<>();
+
     @Autowired
     MyUserDetailService userDetailService;
+
+    @Autowired
+    DbUserRepo dbUserRepo;
 
     @PostConstruct
     void init(){
         secret = Base64.getEncoder().encodeToString(secret.getBytes());
+        JwtWatchList.getInstance();
     }
 
-    public String createToken(String username, Set<String> roles) {
+    public String createToken(String username, String jwtSalt, Set<String> roles) {
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("auth", roles.stream().map(s -> new SimpleGrantedAuthority("ROLE_" + s)).collect(Collectors.toList()));
+        claims.put("salt", jwtSalt);
 
         long now = Calendar.getInstance().getTimeInMillis();
         long validity = now + validityMillis;
@@ -54,6 +65,11 @@ public class JwtTokenProvider {
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
+    private boolean validateJwtSalt(String token) {
+        DbUser user = dbUserRepo.findDistinctFirstByUsernameIgnoreCase(getUsername(token));
+        return user.getJwtSalt().toString().equals(Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("salt"));
+    }
+
     public String getUsername(HttpServletRequest request){
         return getUsername(resolveToken(request));
     }
@@ -62,9 +78,13 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public String getUserNameForTokenRenewal(String token) {
+    public DbUser getUserForTokenRenewal(String token) {
         Claims claims = Jwts.parser().setSigningKey(secret).setAllowedClockSkewSeconds(604800).parseClaimsJws(token).getBody();
-        return claims.getSubject();
+        DbUser user = dbUserRepo.findDistinctFirstByUsernameIgnoreCase(claims.getSubject());
+        if(user.getJwtSalt().toString().equals(claims.get("salt"))){
+            return user;
+        }
+        return null;
     }
 
     public String resolveToken(HttpServletRequest request){
@@ -78,6 +98,8 @@ public class JwtTokenProvider {
     public boolean validateToken(String token){
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            if(JwtWatchList.getInstance().isOnWatchList(getUsername(token)) && !validateJwtSalt(token))
+                throw new JwtException("Expired");
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             throw new CustomException("Expired or invalid JWT token", HttpStatus.INTERNAL_SERVER_ERROR);
