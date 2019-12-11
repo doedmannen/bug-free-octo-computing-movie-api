@@ -63,8 +63,17 @@ export default {
   }),
 
   methods: {
-    getSearchedUsers(val){
+    async getSearchedUsers(val) {
       this.loading = true;
+      let response = await fetch("api/users/search?username=" + this.search, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + this.$store.state.token,
+          "Content-Type": "application/json"
+        }
+      });
+
+      console.log(response);
     }
   },
 
@@ -72,8 +81,7 @@ export default {
     search(val) {
       val && val !== this.select && this.getSearchedUsers(val);
     }
-  },
-
+  }
 };
 </script>
 
