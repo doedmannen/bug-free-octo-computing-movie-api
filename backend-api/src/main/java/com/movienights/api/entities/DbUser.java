@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
 import java.util.Set;
+import java.util.UUID;
 
 public class DbUser {
     @BsonId
@@ -16,14 +17,17 @@ public class DbUser {
     private String accessToken;
     private String refreshToken;
     private Long expiresAt;
+    private UUID jwtSalt;
 
     public DbUser() {
+        jwtSalt = UUID.randomUUID();
     }
 
     public DbUser(String username, String password) {
         this.username = username;
         this.password = password;
         this.roles = Set.of("USER");
+        jwtSalt = UUID.randomUUID();
     }
 
     public DbUser(String username, String password, String accessToken, String refreshToken, long expiresAt) {
@@ -31,6 +35,7 @@ public class DbUser {
         this.password = password;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
+        this.jwtSalt = UUID.randomUUID();
         this.expiresAt = expiresAt;
         this.roles = Set.of("USER");
     }
@@ -108,6 +113,14 @@ public class DbUser {
 
     public void setExpiresAt(Long expiresAt) {
         this.expiresAt = expiresAt;
+    }
+
+    public UUID getJwtSalt() {
+        return jwtSalt;
+    }
+
+    public void setJwtSalt(UUID jwtSalt) {
+        this.jwtSalt = jwtSalt;
     }
 }
 
