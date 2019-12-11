@@ -19,6 +19,7 @@
               hide-details
               label="Type a name to search .."
               solo-inverted
+              multiple
             ></v-autocomplete>
           </v-toolbar>
         </v-col>
@@ -40,6 +41,7 @@
 <script>
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
+import { setTimeout } from "timers";
 
 export default {
   name: "createEvent",
@@ -62,6 +64,12 @@ export default {
     select: null
   }),
 
+  computed: {
+    getSearch() {
+      return this.search;
+    }
+  },
+
   methods: {
     async getSearchedUsers(val) {
       this.loading = true;
@@ -73,13 +81,19 @@ export default {
         }
       });
 
-      console.log(response);
+      let result = await response.json()
+
+      console.log(result);
+      result.map(user => this.items.push(user.username))
     }
   },
 
   watch: {
-    search(val) {
-      val && val !== this.select && this.getSearchedUsers(val);
+    getSearch(val) {
+      this.search = val.trim()
+      setTimeout(() => {
+        val && val.trim().length >= 3 && val !== this.select && this.getSearchedUsers(val);
+      }, 500);
     }
   }
 };
