@@ -8,6 +8,12 @@
         <v-col cols="12" >
         <v-text-field label="Sök" v-model="input"></v-text-field>
         <v-btn @click="search">Sök</v-btn>
+        <div v-if="loaded">
+           <v-btn @click="previouspage" :disabled="page === 1">Föregående</v-btn>
+           {{page}}/
+           {{max}}
+          <v-btn @click="nextpage" :disabled="page === this.max">Nästa</v-btn>
+        </div>
         <v-row v-if="searchResult.result">
              <div v-for="(value) in searchResult.result.Search" :key="value.imbdID">
               <p>{{value.Title}}</p>
@@ -43,10 +49,22 @@ export default {
     searchResult:{},
     loaded: false,
     input:"",
-
+    page: 1,
+    max:0,
   }),
   methods:{
     nextpage(){
+    this.page++
+    this.getSearch();
+    },
+    previouspage(){
+      this.page--
+    this.getSearch();
+    },
+    getmaxpage(){
+       this.max = this.searchResult.result.totalResults
+    this.max= this.max/10
+    this.max= Math.ceil(this.max)
     },
     goTo(title){
       window.location.href = window.location.origin + "/movie/"+title;
@@ -55,7 +73,7 @@ export default {
       this.getSearch();
     },
     async getSearch() { 
-      let url = window.location.origin + "/api/movie/search/?p=1&s="+this.input;
+      let url = window.location.origin + "/api/movie/search/?p="+this.page+"&s="+this.input;
       let response = await fetch(url, {
         method: "GET",
         headers: {
@@ -67,6 +85,7 @@ export default {
       if (response.status === 200) {
         this.searchResult = await response.json();
         this.loaded = true;
+        this.getmaxpage();
       } else {
         this.loaded = false;
       }
