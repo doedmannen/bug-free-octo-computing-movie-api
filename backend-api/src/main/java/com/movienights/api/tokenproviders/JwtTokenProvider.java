@@ -26,9 +26,10 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenProvider {
 
-    private String secret = "SOMEKINDOFSHITTYKEYGOESHERE";
-
-    private long validityMillis = 2629743000L;
+    // Keyboard cat
+    private String secret = "8K?HJ8:nwhjdw1!0i81mjnbuJJHbygr1HQUIn£mnzh¤=o9jk8M#Un3um28!91mP+[6&koeFjU/#j1uiMN";
+    // Short validity
+    private long validityMillis = 9000000L;
 
     private ConcurrentHashMap<String, Long> session = new ConcurrentHashMap<>();
 
