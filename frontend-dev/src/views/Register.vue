@@ -115,8 +115,6 @@ export default {
         })
       });
 
-      //result = await result;
-      console.log(result);
       if (result.status === 200) {
         this.e1 = 2;
       } else if (result.status === 409) {
@@ -137,8 +135,6 @@ export default {
         })
       });
 
-      response = await response.json();
-
       if (response.status === 200) {
         this.$router.push({ path: "/login" });
       } else if (response.status === 409) {
@@ -152,8 +148,6 @@ export default {
     },
 
     async signInCallback(authResult) {
-      console.log("authResult", authResult);
-
       if (authResult["code"]) {
         let response = await fetch("api/googleauth/storeauthcode", {
           method: "POST",
