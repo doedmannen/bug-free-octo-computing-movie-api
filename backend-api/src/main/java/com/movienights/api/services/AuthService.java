@@ -57,6 +57,6 @@ public class AuthService {
         if(user != null) {
             return new ResponseEntity<>(new TokenResponse(tokenProvider.createToken(user.getUsername(), user.getJwtSalt().toString(), user.getRoles())), HttpStatus.OK);
         }
-        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        throw new CustomException("Invalid jwt", HttpStatus.UNAUTHORIZED);
     }
 }
