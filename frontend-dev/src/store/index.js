@@ -30,7 +30,8 @@ export default new Vuex.Store({
           delete localStorage.token; 
           return; 
         }
-        if(isValid){
+        if(isValid) {
+          context.commit('setToken', token)
           return; 
         }
         let response = await fetch(window.location.origin + "/api/auth/refresh",
