@@ -69,6 +69,16 @@ public class DbUserController {
         }
     }
 
+    @PostMapping("check-available")
+    public ResponseEntity<Boolean> checkUsername(@RequestBody DbUser body){
+        boolean user = dbUserService.checkIfUsernameExist(body.getUsername());
+        if(user){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
+        }  else {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+    }
+
     @PostMapping
     public ResponseEntity<DbUser> registerUser(@RequestBody DbUser body) throws JsonProcessingException {
         boolean user = dbUserService.checkIfUsernameExist(body.getUsername());
