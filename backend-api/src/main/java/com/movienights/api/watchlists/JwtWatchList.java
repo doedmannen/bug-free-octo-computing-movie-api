@@ -33,7 +33,6 @@ public class JwtWatchList {
 
     public void watchFor(String username) {
         namesToInspect.put(username, (Calendar.getInstance().getTimeInMillis() + 3600000));
-        System.out.println("Watchlist increased by one " + namesToInspect.size());
     }
 
     private void run() {
@@ -41,8 +40,6 @@ public class JwtWatchList {
             try{
                 Thread.sleep(60000);
             } catch (Exception ignored){}
-
-            System.out.println("Currently there are " + namesToInspect.size() + " names on the system watchlist...");
 
             namesToInspect.entrySet()
                     .stream().filter(entry -> entry.getValue() < Calendar.getInstance().getTimeInMillis())
