@@ -30,8 +30,7 @@ public class MovieController {
         Optional<Movie> movie = movieRepo.findByTitleIgnoreCase(title);
         if (!movie.isPresent()) {
             title = title.replaceAll(" ", "+");
-            omdbWebServiceClient.getFromOmdb(title);
-            movie = movieRepo.findByTitleIgnoreCase(title);
+            movie = omdbWebServiceClient.getFromOmdb(title);
         }
         if (movie.isPresent()){
             return ResponseEntity.ok(movie.get());

@@ -1,7 +1,6 @@
 <template>
 <div>
-<template v-if="loaded">
-
+<template v-if="loaded && exist">
 <v-container fluid>
     <v-row>
       <div class="movie">
@@ -33,6 +32,9 @@
     </v-row>
   </v-container>
 </template>
+<template v-else-if="!loaded && !exist">
+  <h1>Laddar</h1>
+</template>
   <template v-else>
   <h1>Hittar inte filmen</h1>
 </template>
@@ -44,7 +46,8 @@ export default {
   name: "movie",
   data: () => ({
     movie: [],
-    loaded: false
+    loaded: false,
+    exist: false,
   }),
   mounted() {
     this.getMovie();
@@ -65,11 +68,15 @@ export default {
       });
       if (response.status === 200) {
         this.movie = await response.json();
-        this.loaded = true;
+        this.exist = true;
       } else {
-        this.loaded = false;
+        this.exist = false;
       }
+        this.loaded = true;
     }
   }
 };
 </script>
+<style scoped>
+
+</style>
