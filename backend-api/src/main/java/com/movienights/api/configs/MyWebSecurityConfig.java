@@ -49,9 +49,11 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST,
                         "/api/auth/login",
                         "/api/users/",
-                        "/api/googleauth/storeauthcode"
+                        "/api/googleauth/storeauthcode",
+                        "/api/users/check-available"
                 ).permitAll()
                 .antMatchers(HttpMethod.GET,
+                        "/api/calendar/*",
                         "/api/auth/refresh"
                 )
                 .permitAll()

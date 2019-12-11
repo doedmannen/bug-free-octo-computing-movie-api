@@ -29,7 +29,7 @@ public class GoogleAuthController {
     ResponseEntity<GoogleTokenResponse> storeAuthCode(@RequestBody String code, @RequestHeader("X-Requested-With") String encoding) {
         if (encoding == null || encoding.isEmpty()) {
 //             Without the `X-Requested-With` header, this request could be forged. Aborts.
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error, wrong headers");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error, wrong headers ");
         } else {
             GoogleTokenResponse tokenResponse = googleAuthService.getTokens(code);
             return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
