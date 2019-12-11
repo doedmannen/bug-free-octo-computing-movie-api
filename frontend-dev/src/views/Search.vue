@@ -1,14 +1,13 @@
 <template>
 <div>
-<template ><!--v-if="loaded"-->
-
+<template>
 <v-container fluid>
     <v-row>
       <div class="search">
         <v-col cols="12" >
-        <v-text-field label="Sök" v-model="input"></v-text-field>
+        <v-text-field label="Sök" v-model="input" :rules="mincharacters"></v-text-field>
         <v-btn @click="search">Sök</v-btn>
-        <div v-if="loaded">
+        <div v-if="loaded && exist">
            <v-btn @click="previouspage" :disabled="page === 1">Föregående</v-btn>
            {{page}}/
            {{max}}
@@ -23,16 +22,14 @@
           <p>{{value.Year}}</p>
             </div>
         </v-row>
+         <div v-if="!exist && loaded">
+            <h1>Hittar inte filmen</h1>
+        </div>
         </v-col>
       </div>
     </v-row>
   </v-container>
 </template>
-<!--
-  <template v-else>
-  <h1>Hittar inte filmen</h1>
-</template>
--->
 </div>
 </template>
 
@@ -48,9 +45,13 @@ export default {
   data: () => ({
     searchResult:{},
     loaded: false,
+    exist: false,
     input:"",
     page: 1,
     max:0,
+    mincharacters: [
+      v => v.length >= 3 || 'Min 3 tecken'
+      ],
   }),
   methods:{
     nextpage(){
@@ -84,11 +85,12 @@ export default {
       });
       if (response.status === 200) {
         this.searchResult = await response.json();
-        this.loaded = true;
+        this.exist = true;
         this.getmaxpage();
       } else {
-        this.loaded = false;
+        this.exist = false;
       }
+       this.loaded = true;
     }
   },
 };
