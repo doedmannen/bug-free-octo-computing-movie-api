@@ -30,6 +30,16 @@ public class DbUser {
         jwtSalt = UUID.randomUUID();
     }
 
+    public DbUser(String username, String password, String accessToken, String refreshToken, long expiresAt) {
+        this.username = username;
+        this.password = password;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.jwtSalt = UUID.randomUUID();
+        this.expiresAt = expiresAt;
+        this.roles = Set.of("USER");
+    }
+
     @JsonIgnore
     public ObjectId getObjectId(){
         return id;

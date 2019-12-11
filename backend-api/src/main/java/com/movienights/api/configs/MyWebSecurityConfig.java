@@ -30,7 +30,9 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean("authenticationManager")
     @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception { return super.authenticationManagerBean(); }
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -43,11 +45,12 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
         // Our entrypoints
         http.authorizeRequests()
                 // Start of very specific paths in API
-                    // All open POST requests
-                    .antMatchers(HttpMethod.POST,
-                            "/api/auth/login",
-                            "/api/users/"
-                    ).permitAll()
+                // All open POST requests
+                .antMatchers(HttpMethod.POST,
+                        "/api/auth/login",
+                        "/api/users/",
+                        "/api/googleauth/storeauthcode"
+                ).permitAll()
                 .antMatchers(HttpMethod.GET,
                         "/api/auth/refresh"
                 )
@@ -58,8 +61,8 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // End of general api security
                 // Start of general all other paths
                 .antMatchers("/**").permitAll()
-                // End of general all other paths
-                ;
+        // End of general all other paths
+        ;
 
         http.exceptionHandling().accessDeniedPage("/login");
 

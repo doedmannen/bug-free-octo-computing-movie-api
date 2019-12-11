@@ -30,7 +30,7 @@ const routes = [
     component: () => import('@/views/Search.vue')
   },
   {
-    path:'/movie',
+    path:'/movie/:title',
     name: 'movie',
     component: () => import('@/views/Movie.vue')
   },

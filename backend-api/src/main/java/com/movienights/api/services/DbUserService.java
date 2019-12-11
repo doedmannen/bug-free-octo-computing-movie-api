@@ -2,6 +2,8 @@ package com.movienights.api.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.movienights.api.configs.MyUserDetailService;
 import com.movienights.api.entities.DbUser;
 import com.movienights.api.repos.DbUserRepo;
@@ -12,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -25,6 +29,9 @@ public class DbUserService {
     @Autowired
     MyUserDetailService userDetailService;
 
+    @Autowired
+    GoogleAuthService googleAuthService;
+
     public List<DbUser> getAllUsers() {
         return userRepo.findAll();
     }
@@ -36,6 +43,19 @@ public class DbUserService {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /**
+     * @noinspection deprecation
+     */
+    public void refreshAccessToken(String username) {
+        DbUser user = userRepo.findDistinctFirstByUsernameIgnoreCase(username);
+
+        GoogleTokenResponse credential = googleAuthService.getRefreshedCredentials(user.getRefreshToken());
+        Long expiresAt = Calendar.getInstance().getTimeInMillis() + (credential.getExpiresInSeconds() * 1000);
+        user.setAccessToken(credential.getAccessToken());
+        user.setExpiresAt(expiresAt);
+        userRepo.save(user);
     }
 
     public DbUser updateUser(DbUser user) {
@@ -63,7 +83,7 @@ public class DbUserService {
     }
 
     ResponseEntity<DbUser> registerUser(DbUser user) {
-        DbUser newUser = new DbUser(user.getUsername(), userDetailService.getEncoder().encode(user.getPassword()));
+        DbUser newUser = new DbUser(user.getUsername(), userDetailService.getEncoder().encode(user.getPassword()), user.getAccessToken(), user.getRefreshToken(), user.getExpiresAt());
         try {
             userRepo.save(newUser);
         } catch (Exception ex) {
