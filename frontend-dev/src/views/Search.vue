@@ -1,13 +1,18 @@
 <template>
 <div>
-<template ><!--v-if="loaded"-->
-
+<template>
 <v-container fluid>
     <v-row>
       <div class="search">
         <v-col cols="12" >
-        <v-text-field label="Sök" v-model="input"></v-text-field>
+        <v-text-field label="Sök" v-model="input" :rules="mincharacters"></v-text-field>
         <v-btn @click="search">Sök</v-btn>
+        <div v-if="loaded && exist">
+           <v-btn @click="previouspage" :disabled="page === 1">Föregående</v-btn>
+           {{page}}/
+           {{max}}
+          <v-btn @click="nextpage" :disabled="page === this.max">Nästa</v-btn>
+        </div>
         <v-row v-if="searchResult.result">
              <div v-for="(value) in searchResult.result.Search" :key="value.imbdID">
               <p>{{value.Title}}</p>
@@ -17,16 +22,14 @@
           <p>{{value.Year}}</p>
             </div>
         </v-row>
+         <div v-if="!exist && loaded">
+            <h1>Hittar inte filmen</h1>
+        </div>
         </v-col>
       </div>
     </v-row>
   </v-container>
 </template>
-<!--
-  <template v-else>
-  <h1>Hittar inte filmen</h1>
-</template>
--->
 </div>
 </template>
 
@@ -42,11 +45,27 @@ export default {
   data: () => ({
     searchResult:{},
     loaded: false,
+    exist: false,
     input:"",
-
+    page: 1,
+    max:0,
+    mincharacters: [
+      v => v.length >= 3 || 'Min 3 tecken'
+      ],
   }),
   methods:{
     nextpage(){
+    this.page++
+    this.getSearch();
+    },
+    previouspage(){
+      this.page--
+    this.getSearch();
+    },
+    getmaxpage(){
+       this.max = this.searchResult.result.totalResults
+    this.max= this.max/10
+    this.max= Math.ceil(this.max)
     },
     goTo(title){
       window.location.href = window.location.origin + "/movie/"+title;
@@ -55,7 +74,7 @@ export default {
       this.getSearch();
     },
     async getSearch() { 
-      let url = window.location.origin + "/api/movie/search/?p=1&s="+this.input;
+      let url = window.location.origin + "/api/movie/search/?p="+this.page+"&s="+this.input;
       let response = await fetch(url, {
         method: "GET",
         headers: {
@@ -66,10 +85,12 @@ export default {
       });
       if (response.status === 200) {
         this.searchResult = await response.json();
-        this.loaded = true;
+        this.exist = true;
+        this.getmaxpage();
       } else {
-        this.loaded = false;
+        this.exist = false;
       }
+       this.loaded = true;
     }
   },
 };

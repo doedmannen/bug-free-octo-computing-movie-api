@@ -1,5 +1,6 @@
 package com.movienights.api.configs;
 
+import com.movienights.api.services.LogServices;
 import com.movienights.api.tokenproviders.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,9 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     JwtTokenProvider tokenProvider;
 
+    @Autowired
+    LogServices logServices;
+
     @Bean("authenticationManager")
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -49,7 +53,8 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST,
                         "/api/auth/login",
                         "/api/users/",
-                        "/api/googleauth/storeauthcode"
+                        "/api/googleauth/storeauthcode",
+                        "/api/users/check-available"
                 ).permitAll()
                 .antMatchers(HttpMethod.GET,
                         "/api/calendar",
@@ -67,7 +72,7 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.exceptionHandling().accessDeniedPage("/login");
 
-        http.apply(new JwtTokenFilterConfig(tokenProvider));
+        http.apply(new JwtTokenFilterConfig(tokenProvider,logServices));
     }
 
     @Override
