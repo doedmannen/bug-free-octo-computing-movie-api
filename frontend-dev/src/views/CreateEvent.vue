@@ -4,24 +4,63 @@
       <v-row>
         <!-- <<<< LEFT SIDE >>>> -->
         <v-col cols="6">
-          <h2>Select a movie to watch</h2>
-          <v-toolbar dark color="teal">
-            <v-toolbar-title>Invite friends</v-toolbar-title>
-            <v-autocomplete
-              v-model="select"
-              :loading="loading"
-              :items="items"
-              :search-input.sync="search"
-              cache-items
-              class="mx-4"
-              flat
-              hide-no-data
-              hide-details
-              label="Type a name to search .."
-              solo-inverted
-              multiple
-            ></v-autocomplete>
-          </v-toolbar>
+          <v-card color="blue-grey darken-1" dark :loading="isUpdating">
+            <template v-slot:progress>
+              <v-progress-linear absolute color="green lighten-3" height="4" indeterminate></v-progress-linear>
+            </template>
+            <v-img
+              height="200"
+              src="http://images.summitmedia-digital.com/smartpar/images/2017/12/30/movienight-web.jpg"
+            >
+              <v-row>
+                <v-row class="pa-4" align="center" justify="center">
+                  <v-col cols="6" class="text-center">
+                    <h3 class="headline">Create a new movie night</h3>
+                  </v-col>
+                </v-row>
+              </v-row>
+            </v-img>
+            <v-form>
+              <v-container>
+                <v-row>
+                  <v-col cols="12" md="6">
+                    <v-text-field
+                      v-model="nameOfEvent"
+                      :disabled="isUpdating"
+                      filled
+                      color="blue-grey lighten-2"
+                      label="Name"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-autocomplete
+                      v-model="select"
+                      :loading="loading"
+                      :items="items"
+                      :search-input.sync="search"
+                      chips
+                      filled
+                      multiple
+                      label="Type a name to search .."
+                    >
+                    
+                    </v-autocomplete>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-form>
+            <v-divider></v-divider>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                :loading="isUpdating"
+                color="blue-grey darken-3"
+                depressed
+              >
+                <v-icon left>mdi-update</v-icon>Check available times
+              </v-btn>
+            </v-card-actions>
+          </v-card>
         </v-col>
         <!-- >>>> RIGHT SIDE <<<< -->
         <v-col cols="6">
@@ -59,9 +98,11 @@ export default {
       }
     ],
     loading: false,
+    isUpdating: false,
     items: [],
     search: null,
-    select: null
+    select: [],
+    nameOfEvent: ''
   }),
 
   computed: {
@@ -81,23 +122,34 @@ export default {
         }
       });
 
-      let result = await response.json()
+      let result = await response.json();
 
       console.log(result);
-      result.map(user => this.items.push(user.username))
+      if (result.length > 0) {
+        result.map(user => this.items.push(user.username));
+      }
     }
   },
 
   watch: {
     getSearch(val) {
-      this.search = val.trim()
+      this.search = val.trim();
       setTimeout(() => {
-        val && val.trim().length >= 3 && val !== this.select && this.getSearchedUsers(val);
+        val &&
+          val.trim().length >= 3 &&
+          val !== this.select &&
+          this.getSearchedUsers(val);
       }, 500);
-    }
+    },
   }
 };
 </script>
 
 <style scoped>
+.headline {
+  background-color: rgba(0, 0, 0, 0.575);
+  padding: 10px;
+  color: whitesmoke;
+  border-radius: 20px;
+}
 </style>
