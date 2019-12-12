@@ -29,21 +29,21 @@ public class GoogleCalendarService {
     DbUserRepo dbUserRepo;
 
     @Autowired
-    MovieRepo movieRepo;
+    MovieService movieService;
 
     @Autowired
     DbUserService dbUserService;
 
 
 
-    public List<EventSuggestion> getEventSuggestions(List<String> usernames, String movieId) {
+    public List<EventSuggestion> getEventSuggestions(List<String> usernames, String movieTitle) {
         // Renew all access tokens
         usernames.forEach(s -> dbUserService.refreshAccessToken(s));
 
         Set<DbUser> users = getUsersFromDb(usernames);
         Set<Calendar> calendars = getUsersCalendars(users);
         Set<FreeBusyResponse> freeBusyResponses = getFreeBusyResponses(calendars);
-        Optional<Movie> movie = movieRepo.findById(new ObjectId(movieId));
+        Optional<Movie> movie = movieService.findMovieByTitle(movieTitle);
         EventCollector eventCollector = getEventCollector(freeBusyResponses);
 
         if(movie.isEmpty()){
