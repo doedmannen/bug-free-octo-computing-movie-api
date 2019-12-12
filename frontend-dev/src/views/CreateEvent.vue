@@ -4,7 +4,7 @@
       <v-row>
         <!-- <<<< LEFT SIDE >>>> -->
         <v-col cols="6">
-          <v-card color="blue-grey darken-1" dark :loading="isUpdating">
+          <v-card color="blue-grey darken-1" dark>
             <template v-slot:progress>
               <v-progress-linear absolute color="green lighten-3" height="4" indeterminate></v-progress-linear>
             </template>
@@ -26,7 +26,6 @@
                   <v-col cols="12" md="6">
                     <v-text-field
                       v-model="nameOfEvent"
-                      :disabled="isUpdating"
                       filled
                       color="blue-grey lighten-2"
                       label="Name"
@@ -34,7 +33,7 @@
                   </v-col>
                   <v-col cols="12">
                     <v-autocomplete
-                      v-model="select"
+                      v-model="peopleToInvite"
                       :loading="loading"
                       :items="items"
                       :search-input.sync="search"
@@ -43,7 +42,20 @@
                       multiple
                       label="Type a name to search .."
                     >
-                    
+                      <template v-slot:selection="data">
+                        <v-chip
+                          v-bind="data.attrs"
+                          :input-value="data.selected"
+                          close
+                          @click="data.select"
+                          @click:close="remove(data.item)"
+                        >
+                          <v-avatar left>
+                            <v-icon>mdi-account</v-icon>
+                          </v-avatar>
+                          {{ data.item }}
+                        </v-chip>
+                      </template>
                     </v-autocomplete>
                   </v-col>
                 </v-row>
@@ -52,11 +64,7 @@
             <v-divider></v-divider>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn
-                :loading="isUpdating"
-                color="blue-grey darken-3"
-                depressed
-              >
+              <v-btn color="blue-grey darken-3" @click="checkAvailableTimes" depressed>
                 <v-icon left>mdi-update</v-icon>Check available times
               </v-btn>
             </v-card-actions>
@@ -98,11 +106,10 @@ export default {
       }
     ],
     loading: false,
-    isUpdating: false,
     items: [],
     search: null,
-    select: [],
-    nameOfEvent: ''
+    peopleToInvite: [],
+    nameOfEvent: ""
   }),
 
   computed: {
@@ -128,19 +135,34 @@ export default {
       if (result.length > 0) {
         result.map(user => this.items.push(user.username));
       }
+    },
+
+    remove(item) {
+      console.log(item);
+      console.log(this.peopleToInvite);
+      const index = this.peopleToInvite.indexOf(item);
+      if (index >= 0) this.peopleToInvite.splice(index, 1);
+    },
+
+    checkAvailableTimes() {
+      console.log(this.peopleToInvite);
+      console.log(this.nameOfEvent);
     }
+
   },
 
   watch: {
     getSearch(val) {
-      this.search = val.trim();
-      setTimeout(() => {
-        val &&
-          val.trim().length >= 3 &&
-          val !== this.select &&
-          this.getSearchedUsers(val);
-      }, 500);
-    },
+      if (val !== null) {
+        this.search = val.trim();
+        setTimeout(() => {
+          val &&
+            val.trim().length >= 3 &&
+            val !== this.peopleToInvite &&
+            this.getSearchedUsers(val);
+        }, 500);
+      }
+    }
   }
 };
 </script>
