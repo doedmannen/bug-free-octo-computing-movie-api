@@ -6,6 +6,7 @@ import com.movienights.api.entities.Movie;
 import com.movienights.api.entities.SearchResult;
 import com.movienights.api.repos.MovieRepo;
 import com.movienights.api.repos.SearchResultRepo;
+import com.movienights.api.services.MovieService;
 import com.movienights.api.services.OmdbWebServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,17 +26,13 @@ public class MovieController {
     private OmdbWebServiceClient omdbWebServiceClient;
     @Autowired
     private SearchResultRepo searchResultRepo;
+    @Autowired
+    private MovieService movieService;
+
     @GetMapping()
     ResponseEntity<Movie> getByTitle(@RequestParam("t") String title) {
-        Optional<Movie> movie = movieRepo.findByTitleIgnoreCase(title);
-        if (!movie.isPresent()) {
-            title = title.replaceAll(" ", "+");
-            movie = omdbWebServiceClient.getFromOmdb(title);
-        }
-        if (movie.isPresent()){
-            return ResponseEntity.ok(movie.get());
-        }
-        return ResponseEntity.notFound().build();
+        Optional<Movie> movie = movieService.findMovieByTitle(title);
+        return movie.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 
