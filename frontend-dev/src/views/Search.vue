@@ -63,7 +63,7 @@ export default {
     this.getSearch();
     },
     getmaxpage(){
-       this.max = this.searchResult.result.totalResults
+    this.max = this.searchResult.result.totalResults
     this.max= this.max/10
     this.max= Math.ceil(this.max)
     },

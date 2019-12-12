@@ -1,5 +1,6 @@
 package com.movienights.api.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
 
@@ -36,7 +37,6 @@ public class Log {
     public void setQuery(String query) {
         this.query = query;
     }
-
 
     public long getWhen() {
         return when;
