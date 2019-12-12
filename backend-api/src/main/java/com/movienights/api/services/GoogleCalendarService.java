@@ -18,8 +18,6 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.*;
 import java.util.*;
@@ -62,7 +60,8 @@ public class GoogleCalendarService {
         Set<DbUser> users = new HashSet<>();
         usernames.forEach(s -> {
             DbUser user = dbUserRepo.findDistinctFirstByUsernameIgnoreCase(s);
-            users.add(user);
+            if(user != null)
+                users.add(user);
         });
         return users;
     }
@@ -82,7 +81,7 @@ public class GoogleCalendarService {
     private Set<FreeBusyResponse> getFreeBusyResponses(Set<Calendar> calendars){
         Set<FreeBusyResponse> responses = new HashSet<>();
         DateTime starting = new DateTime(java.util.Calendar.getInstance().getTimeInMillis());
-        DateTime ending = new DateTime(java.util.Calendar.getInstance().getTimeInMillis() + 31556926000L);
+        DateTime ending = new DateTime(java.util.Calendar.getInstance().getTimeInMillis() + 2629743000L);
         try {
             for(Calendar calendar : calendars){
                 FreeBusyRequest request = new FreeBusyRequest();
@@ -120,7 +119,7 @@ public class GoogleCalendarService {
         LocalDateTime current = LocalDateTime.now();
         ZonedDateTime timeSuggestor = ZonedDateTime.of(current.getYear(), current.getMonthValue(), current.getDayOfMonth(), 19, 0, 0, 0, ZoneId.systemDefault());
 
-        for(int i = 0; i < 100 || suggestions.size() > 20; i++) {
+        for(int i = 0; i < 30 && suggestions.size() < 20; i++) {
             timeSuggestor.plusDays(1);
             long start = timeSuggestor.toEpochSecond() * 1000L;
             long end = start + movieLengthMillis;
