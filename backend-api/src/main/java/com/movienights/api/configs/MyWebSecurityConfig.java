@@ -74,7 +74,7 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
         // End of general all other paths
         ;
 
-        http.exceptionHandling().accessDeniedPage("/login");
+        //http.exceptionHandling().accessDeniedPage("/login");
 
         http.apply(new JwtTokenFilterConfig(tokenProvider,logServices));
     }

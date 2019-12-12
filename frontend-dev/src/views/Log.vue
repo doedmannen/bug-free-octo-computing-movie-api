@@ -51,7 +51,12 @@ export default {
       if (response.status === 200) {
         this.log = await response.json();
         this.exist = true;
-      }else {
+      }else if(response.status === 403){
+          this.$router.push({
+              path:'/'
+          })
+      }
+       else {
         this.exist = false;
       }
       this.loaded = true;
@@ -60,4 +65,5 @@ export default {
 };
 </script>
 <style scoped>
+/** */
 </style>
