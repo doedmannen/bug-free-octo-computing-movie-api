@@ -38,14 +38,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             } catch (CustomException ex) {
                 SecurityContextHolder.clearContext();
                 httpServletResponse.sendError(ex.getHttpStatus().value(), ex.getMessage());
-                //log om feljwt
-
+                System.out.println("FEL");
+                logServices.Loga(httpServletRequest,httpServletResponse);
                 return;
             }
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
-        // loga här om allt ok
-        logServices.Loga(httpServletRequest);
+        logServices.Loga(httpServletRequest,httpServletResponse);
 
     }
 

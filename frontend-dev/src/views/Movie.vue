@@ -62,7 +62,7 @@ export default {
         method: "GET",
         headers: {
           Authorization:
-            "Bearer "+this.$store.state.token,
+            "Bearer "+"this.$store.state.token",
           "Content-Type": "application/json"
         }
       });
