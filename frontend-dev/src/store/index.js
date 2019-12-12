@@ -38,7 +38,7 @@ export default new Vuex.Store({
           {
             method: "GET",
             headers: {
-              "Authorization": 'Bearer ' + context.state.token
+              "Authorization": 'Bearer ' + token
             }
           }
         );
