@@ -11,6 +11,7 @@ public class Log {
     private String query;
     private String ip;
     private long when;
+    private int statuscode;
 
     public ObjectId getId() {
         return id;
@@ -51,5 +52,13 @@ public class Log {
 
     public void setIp(String ip) {
         this.ip = ip;
+    }
+
+    public int getStatuscode() {
+        return statuscode;
+    }
+
+    public void setStatuscode(int statuscode) {
+        this.statuscode = statuscode;
     }
 }

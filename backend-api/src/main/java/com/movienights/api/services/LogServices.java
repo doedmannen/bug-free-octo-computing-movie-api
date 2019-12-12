@@ -4,6 +4,7 @@ import com.movienights.api.repos.LogRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 
@@ -13,7 +14,7 @@ public class LogServices {
     @Autowired
     LogRepo logRepo;
 
-    public void Loga(HttpServletRequest httpServletRequest){
+    public void Loga(HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
         Log l = new Log();
         l.setUrl(httpServletRequest.getRequestURI());
         l.setQuery(httpServletRequest.getQueryString());
@@ -23,6 +24,7 @@ public class LogServices {
         if(l.getUrl().startsWith("/js") || l.getUrl().startsWith("/favicon.ico") || l.getUrl().startsWith("/css/")){
         }else{
             if(getIP(httpServletRequest) != null){
+                l.setStatuscode(httpServletResponse.getStatus());
                 l.setIp(getIP(httpServletRequest));
                 logRepo.save(l);
             }
