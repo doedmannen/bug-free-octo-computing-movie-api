@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -18,15 +19,12 @@ public class LogController {
 
     @GetMapping()
     ResponseEntity<List<Log>> getLog() {
-        List<Log> log = logRepo.findAll();
-        if (log == null) {
-            return ResponseEntity.notFound().build();
-        }
         List<Log> logs = logRepo.findAll();
         if (logs.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(logRepo.findAll());
+        Collections.reverse(logs);
+        return ResponseEntity.ok(logs);
     }
 
 }

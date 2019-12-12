@@ -61,6 +61,10 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/auth/refresh"
                 )
                 .permitAll()
+                .antMatchers(HttpMethod.GET,
+                        "/api/log"
+                )
+                .hasRole("ADMIN")
                 // End of very specific paths in API
                 // Start of general api security
                 .antMatchers("/api/**").hasRole("USER")
