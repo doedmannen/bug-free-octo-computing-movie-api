@@ -29,7 +29,7 @@ public class GoogleCalendarController {
     GoogleCalendarService googleCalendarService;
 
     @GetMapping()
-    public ResponseEntity<Set<EventSuggestion>> getCalendar(@RequestParam("user") List<String> usernames, @RequestParam("movieId") String movieId) {
-        return new ResponseEntity<>(googleCalendarService.getEventSuggestions(usernames, movieId), HttpStatus.OK);
+    public ResponseEntity<List<EventSuggestion>> getCalendar(@RequestParam("users") List<String> users, @RequestParam("movieId") String movieId) {
+        return new ResponseEntity<>(googleCalendarService.getEventSuggestions(users, movieId), HttpStatus.OK);
     }
 }
