@@ -52,7 +52,7 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/googleauth/storeauthcode"
                 ).permitAll()
                 .antMatchers(HttpMethod.GET,
-                        "/api/calendar/*",
+                        "/api/calendar",
                         "/api/auth/refresh"
                 )
                 .permitAll()
