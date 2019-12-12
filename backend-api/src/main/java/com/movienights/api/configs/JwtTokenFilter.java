@@ -3,7 +3,6 @@ package com.movienights.api.configs;
 import com.movienights.api.exceptions.CustomException;
 import com.movienights.api.services.LogServices;
 import com.movienights.api.tokenproviders.JwtTokenProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -38,7 +37,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             } catch (CustomException ex) {
                 SecurityContextHolder.clearContext();
                 httpServletResponse.sendError(ex.getHttpStatus().value(), ex.getMessage());
-                System.out.println("FEL");
                 logServices.Loga(httpServletRequest,httpServletResponse);
                 return;
             }
