@@ -56,6 +56,46 @@ public class GoogleCalendarService {
         return eventSuggestions;
     }
 
+    public void insertEventIntoCalendars(List<String> usernames, String movieTitle, long startTime){
+        // Renew all access tokens
+        usernames.forEach(s -> dbUserService.refreshAccessToken(s));
+
+        Set<DbUser> users = getUsersFromDb(usernames);
+        Set<Calendar> calendars = getUsersCalendars(users);
+        Optional<Movie> movie = movieService.findMovieByTitle(movieTitle);
+        if(movie.isEmpty())
+            throw new CustomException("Not a valid movie", HttpStatus.NOT_FOUND);
+
+        calendars.forEach(calendar -> createEvent(calendar, movie.get(), startTime));
+
+    }
+
+    private void createEvent(Calendar calendar, Movie movie, long startTime){
+        Event event = new Event();
+        DateTime startDateTime = new DateTime(startTime);
+        DateTime endDateTime = new DateTime(startTime + Long.parseLong(movie.getRuntime().replaceAll("[^0-9]", "")) * 60000L);
+        EventDateTime start = new EventDateTime().setDateTime(startDateTime);
+        EventDateTime end = new EventDateTime().setDateTime(endDateTime);
+        event.setSummary("Movie night: " + movie.getTitle());
+        event.setDescription("Movie and chill...");
+        event.setStart(start);
+        event.setEnd(end);
+        EventReminder[] reminderOverrides = new EventReminder[] {
+                new EventReminder().setMethod("email").setMinutes(24 * 60),
+                new EventReminder().setMethod("popup").setMinutes(10),
+        };
+        Event.Reminders reminders = new Event.Reminders()
+                .setUseDefault(false)
+                .setOverrides(Arrays.asList(reminderOverrides));
+        event.setReminders(reminders);
+        try {
+            calendar.events().insert("primary", event).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new CustomException("Failed to write into calendar", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     private Set<DbUser> getUsersFromDb(List<String> usernames) {
         Set<DbUser> users = new HashSet<>();
         usernames.forEach(s -> {
@@ -63,7 +103,7 @@ public class GoogleCalendarService {
             if(user != null)
                 users.add(user);
             else
-                throw new CustomException("Failed to fetch user " + s, HttpStatus.INTERNAL_SERVER_ERROR);
+                throw new CustomException("Failed to fetch user " + s, HttpStatus.NOT_FOUND);
         });
         return users;
     }
