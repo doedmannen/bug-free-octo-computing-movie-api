@@ -6,6 +6,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.movienights.api.configs.MyUserDetailService;
 import com.movienights.api.entities.DbUser;
+import com.movienights.api.exceptions.CustomException;
 import com.movienights.api.repos.DbUserRepo;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,10 @@ public class DbUserService {
      */
     public void refreshAccessToken(String username) {
         DbUser user = userRepo.findDistinctFirstByUsernameIgnoreCase(username);
+        if(user == null)
+            throw new CustomException("Unknown user " + username, HttpStatus.INTERNAL_SERVER_ERROR);
+        if(user.getExpiresAt() >= 60000L - Calendar.getInstance().getTimeInMillis())
+            return;
 
         GoogleTokenResponse credential = googleAuthService.getRefreshedCredentials(user.getRefreshToken());
         Long expiresAt = Calendar.getInstance().getTimeInMillis() + (credential.getExpiresInSeconds() * 1000);

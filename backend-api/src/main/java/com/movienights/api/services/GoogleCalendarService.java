@@ -62,6 +62,8 @@ public class GoogleCalendarService {
             DbUser user = dbUserRepo.findDistinctFirstByUsernameIgnoreCase(s);
             if(user != null)
                 users.add(user);
+            else
+                throw new CustomException("Failed to fetch user " + s, HttpStatus.INTERNAL_SERVER_ERROR);
         });
         return users;
     }
@@ -120,11 +122,13 @@ public class GoogleCalendarService {
         ZonedDateTime timeSuggestor = ZonedDateTime.of(current.getYear(), current.getMonthValue(), current.getDayOfMonth(), 19, 0, 0, 0, ZoneId.systemDefault());
 
         for(int i = 0; i < 30 && suggestions.size() < 20; i++) {
-            timeSuggestor.plusDays(1);
-            long start = timeSuggestor.toEpochSecond() * 1000L;
+            long start = timeSuggestor.plusDays(i + 1).toEpochSecond() * 1000L;
             long end = start + movieLengthMillis;
             if (eventCollector.isEventSuggestionAvailable(start, end)) {
                 suggestions.add(new EventSuggestion(start, end));
+            }
+            if(eventCollector.isEventSuggestionAvailable(start + 3600000L, end + 3600000L)){
+                suggestions.add(new EventSuggestion(start + 3600000L, end + 3600000L));
             }
         }
         return suggestions;
