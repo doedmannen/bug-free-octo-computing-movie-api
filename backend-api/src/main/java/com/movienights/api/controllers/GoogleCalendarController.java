@@ -32,4 +32,10 @@ public class GoogleCalendarController {
     public ResponseEntity<List<EventSuggestion>> getCalendar(@RequestParam("users") List<String> users, @RequestParam("movieTitle") String movieTitle) {
         return new ResponseEntity<>(googleCalendarService.getEventSuggestions(users, movieTitle), HttpStatus.OK);
     }
+
+    @PostMapping
+    public ResponseEntity<?> insertEventIntoCalendars(@RequestParam("users") List<String> users, @RequestParam("movieTitle") String movieTitle, @RequestParam("start") long start){
+        googleCalendarService.insertEventIntoCalendars(users, movieTitle, start);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
 }

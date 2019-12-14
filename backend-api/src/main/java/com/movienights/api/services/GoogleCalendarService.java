@@ -67,7 +67,6 @@ public class GoogleCalendarService {
             throw new CustomException("Not a valid movie", HttpStatus.NOT_FOUND);
 
         calendars.forEach(calendar -> createEvent(calendar, movie.get(), startTime));
-
     }
 
     private void createEvent(Calendar calendar, Movie movie, long startTime){
