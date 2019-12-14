@@ -53,7 +53,7 @@ public class DbUserService {
         DbUser user = userRepo.findDistinctFirstByUsernameIgnoreCase(username);
         if(user == null)
             throw new CustomException("Unknown user " + username, HttpStatus.INTERNAL_SERVER_ERROR);
-        if(user.getExpiresAt() >= 60000L - Calendar.getInstance().getTimeInMillis())
+        if(Calendar.getInstance().getTimeInMillis() + 60000L < user.getExpiresAt())
             return;
 
         GoogleTokenResponse credential = googleAuthService.getRefreshedCredentials(user.getRefreshToken());
