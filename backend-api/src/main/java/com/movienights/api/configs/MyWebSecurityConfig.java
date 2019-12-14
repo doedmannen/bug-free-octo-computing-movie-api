@@ -57,7 +57,6 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/users/check-available"
                 ).permitAll()
                 .antMatchers(HttpMethod.GET,
-                        "/api/calendar",
                         "/api/auth/refresh"
                 )
                 .permitAll()
