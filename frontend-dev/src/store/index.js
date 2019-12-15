@@ -14,7 +14,6 @@ export default new Vuex.Store({
         localStorage.setItem("token", value); 
         state.token = value; 
         state.username = JSON.parse(atob(value.split(".")[1])).sub;
-        console.log(state.username)
       } else {
         state.username = null; 
         state.token = null; 
