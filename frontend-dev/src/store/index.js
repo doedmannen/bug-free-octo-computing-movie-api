@@ -5,14 +5,18 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    token: null
+    token: null,
+    username: null
   },
   mutations: {
     setToken(state, value){
       if(value && value.split(".")[1]){
         localStorage.setItem("token", value); 
         state.token = value; 
+        state.username = JSON.parse(atob(value.split(".")[1])).sub;
+        console.log(state.username)
       } else {
+        state.username = null; 
         state.token = null; 
         delete localStorage.token;
       }
