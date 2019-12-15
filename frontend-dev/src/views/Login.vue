@@ -49,6 +49,11 @@
           </v-form>
         </v-col>
       </v-row>
+      <v-row justify="center">
+        <v-col cols="4"> 
+         <router-link to="/register">Don't have an account? Click here to register for one</router-link> 
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
