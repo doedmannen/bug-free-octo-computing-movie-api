@@ -43,6 +43,11 @@ const routes = [
     path:'/log',
     name: 'log',
     component: () => import('@/views/Log.vue')
+  },
+  {
+    path: '*', 
+    name: '404',
+    component: () => import('@/views/missing-page.vue')
   }
 ]
 
