@@ -57,10 +57,13 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/users/check-available"
                 ).permitAll()
                 .antMatchers(HttpMethod.GET,
-                        "/api/calendar/*",
                         "/api/auth/refresh"
                 )
                 .permitAll()
+                .antMatchers(HttpMethod.GET,
+                        "/api/log"
+                )
+                .hasRole("ADMIN")
                 // End of very specific paths in API
                 // Start of general api security
                 .antMatchers("/api/**").hasRole("USER")
@@ -70,7 +73,7 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
         // End of general all other paths
         ;
 
-        http.exceptionHandling().accessDeniedPage("/login");
+        //http.exceptionHandling().accessDeniedPage("/login");
 
         http.apply(new JwtTokenFilterConfig(tokenProvider,logServices));
     }

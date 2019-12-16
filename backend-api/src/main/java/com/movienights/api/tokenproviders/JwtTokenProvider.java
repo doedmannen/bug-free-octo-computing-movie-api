@@ -80,12 +80,16 @@ public class JwtTokenProvider {
     }
 
     public DbUser getUserForTokenRenewal(String token) {
-        Claims claims = Jwts.parser().setSigningKey(secret).setAllowedClockSkewSeconds(604800).parseClaimsJws(token).getBody();
-        DbUser user = dbUserRepo.findDistinctFirstByUsernameIgnoreCase(claims.getSubject());
-        if(user.getJwtSalt().toString().equals(claims.get("salt"))){
-            return user;
+        try {
+            Claims claims = Jwts.parser().setSigningKey(secret).setAllowedClockSkewSeconds(604800).parseClaimsJws(token).getBody();
+            DbUser user = dbUserRepo.findDistinctFirstByUsernameIgnoreCase(claims.getSubject());
+            if (user.getJwtSalt().toString().equals(claims.get("salt"))) {
+                return user;
+            }
+            return null;
+        } catch(Exception e){
+            throw new CustomException("Invalid jwt", HttpStatus.UNAUTHORIZED);
         }
-        return null;
     }
 
     public String resolveToken(HttpServletRequest request){

@@ -5,14 +5,17 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    token: null
+    token: null,
+    username: null
   },
   mutations: {
     setToken(state, value){
       if(value && value.split(".")[1]){
         localStorage.setItem("token", value); 
         state.token = value; 
+        state.username = JSON.parse(atob(value.split(".")[1])).sub;
       } else {
+        state.username = null; 
         state.token = null; 
         delete localStorage.token;
       }
@@ -38,7 +41,7 @@ export default new Vuex.Store({
           {
             method: "GET",
             headers: {
-              "Authorization": 'Bearer ' + context.state.token
+              "Authorization": 'Bearer ' + token
             }
           }
         );
