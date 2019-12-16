@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-toolbar dark color="light-blue darken-4">
+    <v-toolbar dark color="blue-grey darken-3">
       <v-toolbar-title>Much movie such night</v-toolbar-title>
 
       <v-spacer></v-spacer>

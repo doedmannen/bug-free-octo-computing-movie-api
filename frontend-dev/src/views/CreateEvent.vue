@@ -4,10 +4,7 @@
       <v-row>
         <!-- <<<< LEFT SIDE >>>> -->
         <v-col cols="6">
-          <v-card color="blue-grey darken-1" dark>
-            <template v-slot:progress>
-              <v-progress-linear absolute color="green lighten-3" height="4" indeterminate></v-progress-linear>
-            </template>
+          <v-card color="blue-grey darken-3" dark>
             <v-img
               height="200"
               src="http://images.summitmedia-digital.com/smartpar/images/2017/12/30/movienight-web.jpg"
@@ -31,16 +28,46 @@
                       label="Name"
                     ></v-text-field>
                   </v-col>
+                  <v-col cols="12" md="12">
+                    <v-autocomplete
+                      v-model="selectedMovie"
+                      :loading="loading"
+                      :items="items2"
+                      item-text="Title"
+                      :search-input.sync="searchMovie"
+                      chips
+                      filled
+                      hide-no-data
+                      v-on:input="getMovieInfo"
+                      label="Search for a movie"
+                    >
+                      <template v-slot:selection="data">
+                        <v-chip
+                          v-bind="data.attrs"
+                          :input-value="data.selected"
+                          close
+                          @click="data.select"
+                          @click:close="remove(data.item)"
+                        >
+                          <v-avatar left>
+                            <v-icon>mdi-filmstrip</v-icon>
+                          </v-avatar>
+                          {{ data.item.Title }}
+                        </v-chip>
+                      </template>
+                    </v-autocomplete>
+                  </v-col>
                   <v-col cols="12">
                     <v-autocomplete
                       v-model="peopleToInvite"
                       :loading="loading"
                       :items="items"
-                      :search-input.sync="search"
+                      :search-input.sync="searchUsers"
                       chips
                       filled
+                      hide-no-data
                       multiple
-                      label="Type a name to search .."
+                      label="Search for people to invite"
                     >
                       <template v-slot:selection="data">
                         <v-chip
@@ -77,6 +104,7 @@
             default-view="week"
             :disable-views="['years', 'year', 'month']"
             style="height: 600px"
+            small
             :events="events"
           ></vue-cal>
         </v-col>
@@ -107,27 +135,37 @@ export default {
     ],
     loading: false,
     items: [],
-    search: null,
+    items2: [],
+    searchUsers: null,
+    searchMovie: null,
     peopleToInvite: [],
+    selectedMovie: "",
     nameOfEvent: ""
   }),
 
   computed: {
     getSearch() {
-      return this.search;
+      return this.searchUsers;
+    },
+
+    getMovieSearch() {
+      return this.searchMovie;
     }
   },
 
   methods: {
     async getSearchedUsers(val) {
       this.loading = true;
-      let response = await fetch("api/users/search?username=" + this.search, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + this.$store.state.token,
-          "Content-Type": "application/json"
+      let response = await fetch(
+        "api/users/search?username=" + this.searchUsers,
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + this.$store.state.token,
+            "Content-Type": "application/json"
+          }
         }
-      });
+      );
 
       let result = await response.json();
 
@@ -137,9 +175,35 @@ export default {
       }
     },
 
+    async getSearchedMovies(val) {
+      this.loading2 = true;
+      let response = await fetch(
+        "api/movie/search/?p=1&s=" + this.searchMovie,
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + this.$store.state.token,
+            "Content-Type": "application/json"
+          }
+        }
+      ).catch(e=>{ console.warn(e)})
+
+      console.log(response.status)
+
+      if (response.status === 200) {
+        let result = await response.json();
+        console.log(result);
+        if (result.result.Search.length > 0) {
+          result.result.Search.map(movie => this.items2.push(movie));
+        }
+      }
+    },
+
+    getMovieInfo(){
+      console.log(this.selectedMovie)
+    },
+
     remove(item) {
-      console.log(item);
-      console.log(this.peopleToInvite);
       const index = this.peopleToInvite.indexOf(item);
       if (index >= 0) this.peopleToInvite.splice(index, 1);
     },
@@ -147,19 +211,31 @@ export default {
     checkAvailableTimes() {
       console.log(this.peopleToInvite);
       console.log(this.nameOfEvent);
+      console.log(this.selectedMovie)
     }
-
   },
 
   watch: {
     getSearch(val) {
       if (val !== null) {
-        this.search = val.trim();
+        this.searchUsers = val.trim();
         setTimeout(() => {
           val &&
             val.trim().length >= 3 &&
             val !== this.peopleToInvite &&
             this.getSearchedUsers(val);
+        }, 1000);
+      }
+    },
+
+    getMovieSearch(val) {
+      if (val !== null) {
+        this.searchMovie = val.trim();
+        setTimeout(() => {
+          val &&
+            val.trim().length >= 3 &&
+            val !== this.selectedMovie &&
+            this.getSearchedMovies(val);
         }, 500);
       }
     }
