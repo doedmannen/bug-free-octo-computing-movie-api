@@ -38,7 +38,6 @@
                       chips
                       filled
                       hide-no-data
-                      v-on:input="getMovieInfo"
                       label="Search for a movie"
                     >
                       <template v-slot:selection="data">
@@ -103,10 +102,32 @@
             class="vuecal--blue-theme"
             default-view="week"
             :disable-views="['years', 'year', 'month']"
-            style="height: 600px"
+            style="height: 630px"
             small
             :events="events"
+            :on-event-click="onEventClick"
           ></vue-cal>
+          <v-dialog v-model="showDialog">
+            <v-card>
+              <v-card-title>
+                <v-icon>{{ selectedEvent.icon }}</v-icon>
+                <span>Book a movie</span>
+                <v-spacer />
+                <strong>{{ selectedEvent.start && selectedEvent.start }}</strong>
+              </v-card-title>
+              <v-card-text>
+                <p v-html="selectedEvent.contentFull" />
+                <strong>Event details:</strong>
+                <ul>
+                  <li>Event starts at: {{ selectedEvent.startDate && selectedEvent.startDate }}</li>
+                  <li>Event ends at: {{ selectedEvent.endDate && selectedEvent.endDate }}</li>
+                  <!-- You can also manipulate the `start` & `end` formatted strings.
+        <li>Event starts at: {{ (selectedEvent.start || '').substring(11) }}</li>
+                  <li>Event ends at: {{ (selectedEvent.end || '').substring(11) }}</li>-->
+                </ul>
+              </v-card-text>
+            </v-card>
+          </v-dialog>
         </v-col>
       </v-row>
     </v-container>
@@ -127,6 +148,8 @@ export default {
   },
 
   data: () => ({
+    selectedEvent: {},
+    showDialog: false,
     events: [
       {
         title: "Testest",
@@ -171,7 +194,6 @@ export default {
 
       let result = await response.json();
 
-      console.log(result);
       if (result.length > 0) {
         result.map(user => this.items.push(user.username));
         this.loadingUser = false;
@@ -193,20 +215,14 @@ export default {
         console.warn(e);
       });
 
-      console.log(response.status);
-
       if (response.status === 200) {
         let result = await response.json();
-        console.log(result);
+
         if (result.result.Search.length > 0) {
           result.result.Search.map(movie => this.items2.push(movie));
         }
       }
       this.loadingMovie = false;
-    },
-
-    getMovieInfo() {
-      console.log(this.selectedMovie);
     },
 
     remove(item) {
@@ -216,7 +232,6 @@ export default {
 
     async checkAvailableTimes() {
       const url = `api/calendar?users=${this.peopleToInvite}&movieTitle=${this.selectedMovie}`;
-      console.log(Moment(1576605600000).format("YYYY-MM-DD HH:mm"));
 
       let response = await fetch(url, {
         method: "GET",
@@ -228,14 +243,26 @@ export default {
 
       let result = await response.json();
 
+      let tempArray = [];
+
       if (response.status === 200) {
         result.map(item =>
-          this.events.push({
+          tempArray.push({
             start: Moment(item.start).format("YYYY-MM-DD HH:mm"),
             end: Moment(item.stop).format("YYYY-MM-DD HH:mm")
           })
         );
+        this.events = tempArray;
       }
+    },
+
+    onEventClick(event, e) {
+      this.selectedEvent = event;
+      console.log(this.selectedEvent);
+      this.showDialog = true;
+
+      // Prevent navigating to narrower view (default vue-cal behavior).
+      e.stopPropagation();
     }
   },
 
@@ -267,11 +294,16 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .headline {
   background-color: rgba(0, 0, 0, 0.575);
   padding: 10px;
   color: whitesmoke;
   border-radius: 20px;
+}
+
+.vuecal__event {
+  cursor: pointer;
+  background-color: rgba(103, 180, 198, 0.664);
 }
 </style>
