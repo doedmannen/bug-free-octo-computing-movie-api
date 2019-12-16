@@ -6,12 +6,12 @@
       <div class="search">
         <v-col cols="12" >
         <v-text-field label="Sök" v-model="input" :rules="mincharacters"></v-text-field>
-        <v-btn @click="search">Sök</v-btn>
+        <v-btn @click="search">Search</v-btn>
         <div v-if="loaded && exist">
-           <v-btn @click="previouspage" :disabled="page === 1">Föregående</v-btn>
+           <v-btn @click="previouspage" :disabled="page === 1">previous</v-btn>
            {{page}}/
            {{max}}
-          <v-btn @click="nextpage" :disabled="page === this.max">Nästa</v-btn>
+          <v-btn @click="nextpage" :disabled="page === this.max">Next</v-btn>
         </div>
         <v-row v-if="searchResult.result">
              <div v-for="(value) in searchResult.result.Search" :key="value.imbdID">
@@ -23,7 +23,7 @@
             </div>
         </v-row>
          <div v-if="!exist && loaded">
-            <h1>Hittar inte filmen</h1>
+            <h1>Can`t find film</h1>
         </div>
         </v-col>
       </div>

@@ -31,16 +31,8 @@ public class GoogleAuthService {
             e.printStackTrace();
         }
 
-        // Store these 3 in your DB
-        String accessToken = tokenResponse.getAccessToken();
-        String refreshToken = tokenResponse.getRefreshToken();
         Long expiresAt = System.currentTimeMillis() + (tokenResponse.getExpiresInSeconds() * 1000);
         tokenResponse.setExpiresInSeconds(expiresAt);
-
-        // Debug purpose only
-        System.out.println("accessToken: " + accessToken);
-        System.out.println("refreshToken: " + refreshToken);
-        System.out.println("expiresAt: " + expiresAt);
 
         return tokenResponse;
     }

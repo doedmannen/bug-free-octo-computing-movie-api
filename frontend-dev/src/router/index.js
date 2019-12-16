@@ -43,6 +43,11 @@ const routes = [
     path:'/log',
     name: 'log',
     component: () => import('@/views/Log.vue')
+  },
+  {
+    path: '*', 
+    name: '404',
+    component: () => import('@/views/missing-page.vue')
   }
 ]
 
@@ -51,5 +56,6 @@ const router = new VueRouter({
   mode: 'history',
   routes
 })
+
 
 export default router
