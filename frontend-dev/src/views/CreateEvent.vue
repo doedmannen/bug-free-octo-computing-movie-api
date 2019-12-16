@@ -31,7 +31,7 @@
                   <v-col cols="12" md="12">
                     <v-autocomplete
                       v-model="selectedMovie"
-                      :loading="loading"
+                      :loading="loadingMovie"
                       :items="items2"
                       item-text="Title"
                       :search-input.sync="searchMovie"
@@ -60,7 +60,7 @@
                   <v-col cols="12">
                     <v-autocomplete
                       v-model="peopleToInvite"
-                      :loading="loading"
+                      :loading="loadingUser"
                       :items="items"
                       :search-input.sync="searchUsers"
                       chips
@@ -117,6 +117,7 @@
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 import { setTimeout } from "timers";
+import Moment from "moment";
 
 export default {
   name: "createEvent",
@@ -133,7 +134,8 @@ export default {
         end: "2019-12-11 20:00"
       }
     ],
-    loading: false,
+    loadingUser: false,
+    loadingMovie: false,
     items: [],
     items2: [],
     searchUsers: null,
@@ -155,7 +157,7 @@ export default {
 
   methods: {
     async getSearchedUsers(val) {
-      this.loading = true;
+      this.loadingUser = true;
       let response = await fetch(
         "api/users/search?username=" + this.searchUsers,
         {
@@ -172,11 +174,12 @@ export default {
       console.log(result);
       if (result.length > 0) {
         result.map(user => this.items.push(user.username));
+        this.loadingUser = false;
       }
     },
 
     async getSearchedMovies(val) {
-      this.loading2 = true;
+      this.loadingMovie = true;
       let response = await fetch(
         "api/movie/search/?p=1&s=" + this.searchMovie,
         {
@@ -186,9 +189,11 @@ export default {
             "Content-Type": "application/json"
           }
         }
-      ).catch(e=>{ console.warn(e)})
+      ).catch(e => {
+        console.warn(e);
+      });
 
-      console.log(response.status)
+      console.log(response.status);
 
       if (response.status === 200) {
         let result = await response.json();
@@ -197,10 +202,11 @@ export default {
           result.result.Search.map(movie => this.items2.push(movie));
         }
       }
+      this.loadingMovie = false;
     },
 
-    getMovieInfo(){
-      console.log(this.selectedMovie)
+    getMovieInfo() {
+      console.log(this.selectedMovie);
     },
 
     remove(item) {
@@ -208,10 +214,28 @@ export default {
       if (index >= 0) this.peopleToInvite.splice(index, 1);
     },
 
-    checkAvailableTimes() {
-      console.log(this.peopleToInvite);
-      console.log(this.nameOfEvent);
-      console.log(this.selectedMovie)
+    async checkAvailableTimes() {
+      const url = `api/calendar?users=${this.peopleToInvite}&movieTitle=${this.selectedMovie}`;
+      console.log(Moment(1576605600000).format("YYYY-MM-DD HH:mm"));
+
+      let response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + this.$store.state.token,
+          "Content-Type": "application/json"
+        }
+      });
+
+      let result = await response.json();
+
+      if (response.status === 200) {
+        result.map(item =>
+          this.events.push({
+            start: Moment(item.start).format("YYYY-MM-DD HH:mm"),
+            end: Moment(item.stop).format("YYYY-MM-DD HH:mm")
+          })
+        );
+      }
     }
   },
 
