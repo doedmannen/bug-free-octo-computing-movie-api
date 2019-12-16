@@ -1,7 +1,14 @@
 <template>
   <div class="login">
-    <v-container>
+    <v-row justify="center">
+        
+        <v-col cols="4"> 
+          <h4> This is a site where you can book movie nights with your friends.
+      Search and read about films. </h4>
+        </v-col>
+      </v-row>
       <v-row justify="center">
+        
         <v-col cols="4"> 
           <h1>Login</h1>
         </v-col>
