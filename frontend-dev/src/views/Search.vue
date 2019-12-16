@@ -5,8 +5,8 @@
     <v-row>
       <div class="search">
         <v-col cols="12" >
-        <v-text-field label="Sök" v-model="input" :rules="mincharacters"></v-text-field>
-        <v-btn @click="search">Search</v-btn>
+        <v-text-field label="Search" v-model="input" :rules="mincharacters"></v-text-field>
+        <v-btn @click="search" class="search-button">Search</v-btn>
         <div v-if="loaded && exist">
            <v-btn @click="previouspage" :disabled="page === 1">previous</v-btn>
            {{page}}/
@@ -95,3 +95,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.search-button{
+      margin-bottom: 5px;
+}
+</style>>
