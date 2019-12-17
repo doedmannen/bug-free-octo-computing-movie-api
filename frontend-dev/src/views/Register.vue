@@ -10,7 +10,7 @@
       <v-stepper-items>
         <v-stepper-content step="1">
           <v-card class="mb-12" color="grey lighten-4" height="230px">
-            <v-layout align-center fill-height>
+            <v-layout align-center justify-center fill-height>
               <v-form v-model="valid">
                 <v-container class="py-0">
                   <v-row>

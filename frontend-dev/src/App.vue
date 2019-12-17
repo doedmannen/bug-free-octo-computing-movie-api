@@ -2,7 +2,7 @@
   <v-app>
     <TopNavBar />
 
-    <v-content>
+    <v-content class="pa-5">
       <router-view></router-view>
     </v-content>
   </v-app>

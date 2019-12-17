@@ -9,7 +9,7 @@ Vue.config.productionTip = false
 router.beforeEach(async (to, from, next) => {
   await store.dispatch('tokenLookup');
   let token = store.state.token || localStorage.token; 
-  let publicPaths = ['start','login', 'register'];
+  let publicPaths = ['start', 'about', 'login', 'register'];
   let restrictedAccess = !publicPaths.includes(to.name); 
 
   if(!token && restrictedAccess){

@@ -1,7 +1,6 @@
 <template>
   <div class="login">
-    <v-row justify="center">
-      </v-row>
+    <v-container>
       <v-row justify="center">
         <v-col cols="4"> 
           <h1>Login</h1>
