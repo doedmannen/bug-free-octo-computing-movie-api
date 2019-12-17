@@ -162,7 +162,6 @@ export default {
       this.selectedMovie = this.$route.params.title;
       this.items2 = [{ Title: this.selectedMovie }];
     }
-    console.log(this.$route);
   },
   computed: {
     getSearch() {
@@ -276,7 +275,6 @@ export default {
 
     onEventClick(event, e) {
       this.selectedEvent = event;
-      console.log(this.selectedEvent);
       this.showDialog = true;
       e.stopPropagation();
     }
