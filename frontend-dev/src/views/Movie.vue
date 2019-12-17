@@ -7,7 +7,7 @@
         <h1>{{movie.Title}}</h1>
         <v-row>
           <v-col cols="5">
-            <v-img :src="movie.Poster"></v-img>
+            <v-img :src="movie.Poster === 'N/A' ? `https://image.shutterstock.com/image-vector/no-image-available-icon-template-260nw-1036735678.jpg` : movie.Poster"></v-img>
           </v-col>
           <v-col cols="5">
             <p>Time: {{movie.Runtime}}</p>
