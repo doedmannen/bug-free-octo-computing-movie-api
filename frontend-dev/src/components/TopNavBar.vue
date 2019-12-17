@@ -1,14 +1,16 @@
 <template>
   <div>
     <v-toolbar dark color="blue-grey darken-3">
+      <div>
+        <v-img src="@/assets/doge.png" width="67px"></v-img>
+      </div>
       <v-toolbar-title>Much movie such night</v-toolbar-title>
 
       <v-spacer></v-spacer>
-      
+
       <v-toolbar-title>{{ $store.state.token ? $store.state.username : "" }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        
         <v-btn to="/" text>Home</v-btn>
         <v-btn to="/about" text>About</v-btn>
         <v-btn to="/search" text>Search</v-btn>
@@ -24,6 +26,5 @@ export default {
   name: "TopNavBar",
 
   data: () => ({})
-  
 };
 </script>

@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class DbUserService {
@@ -38,7 +39,7 @@ public class DbUserService {
     }
 
     public List<DbUser> getSearchedUsers(String searchQuery) {
-        return userRepo.findDbUsersByUsernameIsLikeIgnoreCase(searchQuery);
+        return userRepo.findDbUsersByUsernameIsLikeIgnoreCase(searchQuery).stream().filter(dbUser -> dbUser.getAccessToken() != null).collect(Collectors.toList());
     }
 
     public DbUser getOneUser(String id) {
