@@ -32,7 +32,7 @@ public class JwtWatchList {
     }
 
     public void watchFor(String username) {
-        namesToInspect.put(username, (Calendar.getInstance().getTimeInMillis() + 3600000));
+        namesToInspect.put(username, (Calendar.getInstance().getTimeInMillis() + 900000L));
     }
 
     private void run() {
