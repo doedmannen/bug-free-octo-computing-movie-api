@@ -25,9 +25,6 @@ public class MyUserDetailService implements UserDetailsService {
 
     @PostConstruct
     private void createDefaultUsers(){
-        if (repository.findDistinctFirstByUsernameIgnoreCase("user") == null) {
-            addUser("user", "password");
-        }
         if (repository.findDistinctFirstByUsernameIgnoreCase("admin") == null) {
             addAdmin("admin", "password");
         }
