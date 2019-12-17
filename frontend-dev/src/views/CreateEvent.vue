@@ -20,14 +20,6 @@
             <v-form>
               <v-container>
                 <v-row>
-                  <v-col cols="12" md="6">
-                    <v-text-field
-                      v-model="nameOfEvent"
-                      filled
-                      color="blue-grey lighten-2"
-                      label="Name"
-                    ></v-text-field>
-                  </v-col>
                   <v-col cols="12" md="12">
                     <v-autocomplete
                       v-model="selectedMovie"
@@ -90,7 +82,11 @@
             <v-divider></v-divider>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue-grey darken-3" @click="checkAvailableTimes" depressed>
+              <v-btn
+                color="blue-grey darken-3"
+                :disabled="!validateEmpty"
+                @click="checkAvailableTimes"
+              >
                 <v-icon left>mdi-update</v-icon>Check available times
               </v-btn>
             </v-card-actions>
@@ -149,22 +145,17 @@ export default {
   data: () => ({
     selectedEvent: {},
     showDialog: false,
-    events: [
-      {
-        title: "Testest",
-        start: "2019-12-11 18:00",
-        end: "2019-12-11 20:00"
-      }
-    ],
+    events: [],
     loadingUser: false,
     loadingMovie: false,
     items: [],
     items2: [],
+    usersToInviteValid: false,
+    selectedMovieValid: false,
     searchUsers: null,
     searchMovie: null,
     peopleToInvite: [],
-    selectedMovie: "",
-    nameOfEvent: ""
+    selectedMovie: ""
   }),
 
   computed: {
@@ -174,6 +165,10 @@ export default {
 
     getMovieSearch() {
       return this.searchMovie;
+    },
+
+    validateEmpty(){
+      return this.peopleToInvite.length !== 0 && this.selectedMovie !== "";
     }
   },
 
@@ -210,9 +205,7 @@ export default {
             "Content-Type": "application/json"
           }
         }
-      ).catch(e => {
-        console.warn(e);
-      });
+      );
 
       if (response.status === 200) {
         let result = await response.json();
@@ -304,7 +297,7 @@ export default {
             val.trim().length >= 3 &&
             val !== this.selectedMovie &&
             this.getSearchedMovies(val);
-        }, 500);
+        }, 1000);
       }
     }
   }
