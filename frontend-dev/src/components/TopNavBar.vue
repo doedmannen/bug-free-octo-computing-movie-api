@@ -12,6 +12,7 @@
         <v-btn to="/" text>Home</v-btn>
         <v-btn to="/about" text>About</v-btn>
         <v-btn to="/search" text>Search</v-btn>
+        <v-btn to="/log" text>{{ $store.state.isAdmin ? "log" : "" }}</v-btn>
         <v-btn to="/createEvent" text>Create movie night</v-btn>
         <v-btn to="/login" text>{{ $store.state.token ? "logout" : "login" }}</v-btn>
       </v-toolbar-items>
