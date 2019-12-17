@@ -1,6 +1,10 @@
 <template>
   <div class="home">
-    <h1>This is home</h1>
+    <h1>Home</h1><p>
+      This is a site where you can book movie nights with your friends.
+      Search and read about films. 
+      </p>
+      <v-btn>Get calendar info</v-btn>
   </div>
 </template>
 
@@ -16,6 +20,14 @@ export default {
   data: () => ({
     //
   }),
+
+  methods: {
+      async getCalendarInfo(){
+        let result = await fetch("https://www.googleapis.com/calendar/v3/freeBusy",  {
+          
+        })
+      }
+  }
 };
 </script>
 

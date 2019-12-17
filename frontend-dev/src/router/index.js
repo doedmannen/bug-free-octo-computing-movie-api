@@ -30,7 +30,7 @@ const routes = [
     component: () => import('@/views/Search.vue')
   },
   {
-    path:'/movie',
+    path:'/movie/:title',
     name: 'movie',
     component: () => import('@/views/Movie.vue')
   },
@@ -38,6 +38,20 @@ const routes = [
     path:'/createEvent',
     name: 'createEvent',
     component: () => import('@/views/CreateEvent.vue')
+  },
+  {
+    path:'/log',
+    name: 'log',
+    component: () => import('@/views/Log.vue')
+  }, {
+    path:'/start',
+    name: 'start',
+    component: () => import('@/views/Start.vue')
+  },
+  {
+    path: '*', 
+    name: '404',
+    component: () => import('@/views/missing-page.vue')
   }
 ]
 
@@ -46,5 +60,6 @@ const router = new VueRouter({
   mode: 'history',
   routes
 })
+
 
 export default router
