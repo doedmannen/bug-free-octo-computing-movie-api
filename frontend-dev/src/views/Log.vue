@@ -1,10 +1,10 @@
 <template>
   <div class="log">
     <h1>Log</h1>
-    <v-row v-if="loaded && exist">
-      <div v-for="(value) in log" :key="value.when">
-        <v-col>
-          <br>
+
+    <v-col v-if="loaded && exist">
+      <div cols="12" v-for="(value) in log" :key="value.when">
+        <v-col cols="6">
           when:{{chancgetime(value.when)}}
           url:{{value.url}}
           query:{{value.query}}
@@ -13,12 +13,13 @@
         </v-col>
       </div>
       <div v-if="loaded && exist">
-        <br>
            <v-btn @click="previouspage" :disabled="page === 1">previous</v-btn>
            {{page}}
           <v-btn @click="nextpage" :disabled="this.max < 50">Next</v-btn>
         </div>
-    </v-row>
+    </v-col>
+
+
     <div v-else-if="loaded && !exist">
        <h3>Lodded</h3>
     </div>
