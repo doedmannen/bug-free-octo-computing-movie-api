@@ -84,6 +84,7 @@
               <v-btn
                 color="blue-grey darken-3"
                 :disabled="!validateEmpty"
+                :loading="loadingAvailableTimes"
                 @click="checkAvailableTimes"
               >
                 <v-icon left>mdi-update</v-icon>Check available times
@@ -147,6 +148,7 @@ export default {
     events: [],
     loadingUser: false,
     loadingMovie: false,
+    loadingAvailableTimes: false,
     items: [],
     items2: [],
     usersToInviteValid: false,
@@ -178,7 +180,7 @@ export default {
   },
 
   methods: {
-    async getSearchedUsers(val) {
+    async getSearchedUsers() {
       this.loadingUser = true;
       let response = await fetch(
         "api/users/search?username=" + this.searchUsers,
@@ -199,7 +201,7 @@ export default {
       }
     },
 
-    async getSearchedMovies(val) {
+    async getSearchedMovies() {
       this.loadingMovie = true;
       let response = await fetch(
         "api/movie/search/?p=1&s=" + this.searchMovie,
@@ -228,6 +230,7 @@ export default {
     },
 
     async checkAvailableTimes() {
+      this.loadingAvailableTimes = true;
       const url = `api/calendar?users=${this.peopleToInvite}&movieTitle=${this.selectedMovie}`;
 
       let response = await fetch(url, {
@@ -251,6 +254,7 @@ export default {
         );
         this.events = tempArray;
       }
+      this.loadingAvailableTimes = false;
     },
 
     async createEvent(startTime) {
@@ -288,7 +292,7 @@ export default {
           val &&
             val.trim().length >= 3 &&
             val !== this.peopleToInvite &&
-            this.getSearchedUsers(val);
+            this.getSearchedUsers();
         }, 1000);
       }
     },
@@ -300,7 +304,7 @@ export default {
           val &&
             val.trim().length >= 3 &&
             val !== this.selectedMovie &&
-            this.getSearchedMovies(val);
+            this.getSearchedMovies();
         }, 1000);
       }
     }
