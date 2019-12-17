@@ -50,6 +50,11 @@
         </v-col>
       </v-row>
       <v-row justify="center">
+        <v-col justify="center" cols="4"> 
+          <v-card class="error pa-3" v-show="loginResponse">{{ loginResponse }}</v-card>
+        </v-col>
+      </v-row>
+      <v-row justify="center">
         <v-col cols="4"> 
          <router-link to="/register">Don't have an account? Click here to register for one</router-link> 
         </v-col>
@@ -71,7 +76,7 @@
       passwordRules: [
         v => !!v || 'Password is required'
       ],
-      loginRespose: ""
+      loginResponse: ""
     }),
     computed: {
       hasValidAuth(){
