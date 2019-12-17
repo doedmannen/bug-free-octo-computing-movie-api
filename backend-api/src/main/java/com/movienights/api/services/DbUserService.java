@@ -59,6 +59,8 @@ public class DbUserService {
         DbUser user = userRepo.findDistinctFirstByUsernameIgnoreCase(username);
         if(user == null)
             throw new CustomException("Unknown user " + username, HttpStatus.INTERNAL_SERVER_ERROR);
+        if(user.getRefreshToken() == null)
+            return;
         if(Calendar.getInstance().getTimeInMillis() + 60000L < user.getExpiresAt())
             return;
 
