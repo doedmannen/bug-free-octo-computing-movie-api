@@ -99,10 +99,13 @@ public class GoogleCalendarService {
         Set<DbUser> users = new HashSet<>();
         usernames.forEach(s -> {
             DbUser user = dbUserRepo.findDistinctFirstByUsernameIgnoreCase(s);
-            if(user != null)
-                users.add(user);
-            else
+            if(user != null) {
+                if (user.getAccessToken() != null) {
+                    users.add(user);
+                }
+            } else {
                 throw new CustomException("Failed to fetch user " + s, HttpStatus.NOT_FOUND);
+            }
         });
         return users;
     }
@@ -158,9 +161,9 @@ public class GoogleCalendarService {
             throw new CustomException("The specific movie has no runtime", HttpStatus.INTERNAL_SERVER_ERROR);
         }
         LocalDateTime current = LocalDateTime.now();
-        ZonedDateTime timeSuggestor = ZonedDateTime.of(current.getYear(), current.getMonthValue(), current.getDayOfMonth(), 19, 0, 0, 0, ZoneId.systemDefault());
+        ZonedDateTime timeSuggestor = ZonedDateTime.of(current.getYear(), current.getMonthValue(), current.getDayOfMonth(), 18, 0, 0, 0, ZoneId.systemDefault());
 
-        for(int i = 0; i < 30 && suggestions.size() < 20; i++) {
+        for(int i = 0; i < 30; i++) {
             long start = timeSuggestor.plusDays(i + 1).toEpochSecond() * 1000L;
             long end = start + movieLengthMillis;
             if (eventCollector.isEventSuggestionAvailable(start, end)) {
@@ -168,6 +171,9 @@ public class GoogleCalendarService {
             }
             if(eventCollector.isEventSuggestionAvailable(start + 3600000L, end + 3600000L)){
                 suggestions.add(new EventSuggestion(start + 3600000L, end + 3600000L));
+            }
+            if(eventCollector.isEventSuggestionAvailable(start + 7200000L, end + 7200000L)){
+                suggestions.add(new EventSuggestion(start + 7200000L, end + 7200000L));
             }
         }
         return suggestions;
