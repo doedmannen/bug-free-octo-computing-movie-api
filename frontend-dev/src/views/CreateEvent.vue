@@ -107,7 +107,7 @@
             :events="events"
             :on-event-click="onEventClick"
           ></vue-cal>
-          <v-dialog v-model="showDialog">
+          <v-dialog v-model="showDialog" width="600px">
             <v-card>
               <v-card-title>
                 <v-icon>{{ selectedEvent.icon }}</v-icon>
@@ -119,12 +119,11 @@
                 <p v-html="selectedEvent.contentFull" />
                 <strong>Event details:</strong>
                 <ul>
+                  <li>Movie: {{ this.selectedMovie }}</li>
                   <li>Event starts at: {{ selectedEvent.startDate && selectedEvent.startDate }}</li>
                   <li>Event ends at: {{ selectedEvent.endDate && selectedEvent.endDate }}</li>
-                  <!-- You can also manipulate the `start` & `end` formatted strings.
-        <li>Event starts at: {{ (selectedEvent.start || '').substring(11) }}</li>
-                  <li>Event ends at: {{ (selectedEvent.end || '').substring(11) }}</li>-->
                 </ul>
+                <v-btn @click="createEvent(selectedEvent.start)">Create event</v-btn>
               </v-card-text>
             </v-card>
           </v-dialog>
@@ -256,12 +255,30 @@ export default {
       }
     },
 
+    async createEvent(startTime) {
+      let ms = Date.parse(startTime);
+      const url = `api/calendar?users=${this.peopleToInvite}&movieTitle=${this.selectedMovie}&start=${ms}`;
+
+      let response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + this.$store.state.token,
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (response.status === 200) {
+        this.events = [];
+        this.selectedMovie = "";
+        this.peopleToInvite = [];
+        this.showDialog = false;
+      }
+    },
+
     onEventClick(event, e) {
       this.selectedEvent = event;
       console.log(this.selectedEvent);
       this.showDialog = true;
-
-      // Prevent navigating to narrower view (default vue-cal behavior).
       e.stopPropagation();
     }
   },

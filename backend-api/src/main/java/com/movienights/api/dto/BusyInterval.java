@@ -33,6 +33,6 @@ public class BusyInterval {
     }
 
     public boolean intersectsWithTimeSpan(long _start, long _end){
-         return _start <= end && _start >= start || _end >= start && _end <= end;
+         return _start < end && _start > start || _end > start && _end < end;
     }
 }

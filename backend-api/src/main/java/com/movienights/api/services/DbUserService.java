@@ -38,7 +38,6 @@ public class DbUserService {
     }
 
     public List<DbUser> getSearchedUsers(String searchQuery) {
-        System.out.println(searchQuery);
         return userRepo.findDbUsersByUsernameIsLikeIgnoreCase(searchQuery);
     }
 
