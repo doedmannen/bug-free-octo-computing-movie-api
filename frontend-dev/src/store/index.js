@@ -6,7 +6,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     token: null,
-    username: null
+    username: null,
+    isAdmin: false
   },
   mutations: {
     setToken(state, value){
@@ -14,9 +15,11 @@ export default new Vuex.Store({
         localStorage.setItem("token", value); 
         state.token = value; 
         state.username = JSON.parse(atob(value.split(".")[1])).sub;
+        state.isAdmin = JSON.parse(atob(value.split(".")[1])).auth.filter(o => o.authority === "ROLE_ADMIN").length === 1;
       } else {
         state.username = null; 
         state.token = null; 
+        state.isAdmin = false; 
         delete localStorage.token;
       }
     }

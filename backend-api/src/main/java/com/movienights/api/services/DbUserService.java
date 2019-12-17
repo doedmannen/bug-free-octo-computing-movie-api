@@ -38,8 +38,9 @@ public class DbUserService {
         return userRepo.findAll();
     }
 
-    public List<DbUser> getSearchedUsers(String searchQuery) {
-        return userRepo.findDbUsersByUsernameIsLikeIgnoreCase(searchQuery).stream().filter(dbUser -> dbUser.getAccessToken() != null).collect(Collectors.toList());
+    public List<DbUser> getSearchedUsers(String searchQuery, String username) {
+        return userRepo.findDbUsersByUsernameIsLikeIgnoreCase(searchQuery).stream().filter(dbUser -> dbUser.getAccessToken() != null)
+                .filter(dbUser -> !dbUser.getUsername().equalsIgnoreCase(username)).collect(Collectors.toList());
     }
 
     public DbUser getOneUser(String id) {
@@ -58,6 +59,8 @@ public class DbUserService {
         DbUser user = userRepo.findDistinctFirstByUsernameIgnoreCase(username);
         if(user == null)
             throw new CustomException("Unknown user " + username, HttpStatus.INTERNAL_SERVER_ERROR);
+        if(user.getRefreshToken() == null)
+            return;
         if(Calendar.getInstance().getTimeInMillis() + 60000L < user.getExpiresAt())
             return;
 
