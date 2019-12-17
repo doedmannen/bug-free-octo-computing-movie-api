@@ -1,22 +1,30 @@
 <template>
   <div class="log">
     <h1>Log</h1>
-    <v-row v-if="loaded && exist">
-      <div v-for="(value) in log" :key="value.when">
-        <v-col>
-          När:{{chancgetime(value.when)}}
+
+    <v-col v-if="loaded && exist">
+      <div cols="12" v-for="(value) in log" :key="value.when">
+        <v-col cols="6">
+          when:{{chancgetime(value.when)}}
           url:{{value.url}}
           query:{{value.query}}
           status:{{value.statuscode}}
           ip:{{value.ip}}
         </v-col>
       </div>
-    </v-row>
+      <div v-if="loaded && exist">
+           <v-btn @click="previouspage" :disabled="page === 1">previous</v-btn>
+           {{page}}
+          <v-btn @click="nextpage" :disabled="this.max < 50">Next</v-btn>
+        </div>
+    </v-col>
+
+
     <div v-else-if="loaded && !exist">
-       <h3>Ladar</h3>
+       <h3>Lodded</h3>
     </div>
   <div v-else>
-       <h3>Hittar inga</h3>
+       <h3>Can´t find any</h3>
     </div>
   </div>
 </template>
@@ -28,7 +36,9 @@ export default {
   data: () => ({
     log: [],
     loaded: false,
-    exist:false
+    exist:false,
+    page: 1,
+    max:''
   }),
   mounted() {
     this.getLog();
@@ -38,9 +48,18 @@ export default {
     chancgetime(t) {
       let d = new Date(t);
       return d.toLocaleString();
+    },nextpage(){
+    this.page++
+    this.getLog();
+    },
+    previouspage(){
+      this.page--
+    this.getLog();
+    },getmaxpage(){
+    this.max = this.log.length
     },
     async getLog() {
-      let url = window.location.origin + "/api/log";
+      let url = window.location.origin + "/api/log?page="+this.page;
       let response = await fetch(url, {
         method: "GET",
         headers: {
@@ -51,6 +70,7 @@ export default {
       if (response.status === 200) {
         this.log = await response.json();
         this.exist = true;
+        this.getmaxpage();
       }else if(response.status === 403){
           this.$router.push({
               path:'/'

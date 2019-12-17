@@ -6,16 +6,19 @@ import com.movienights.api.entities.DbUser;
 import com.movienights.api.repos.DbUserRepo;
 import com.movienights.api.services.DbUserService;
 import com.movienights.api.services.GoogleAuthService;
+import com.movienights.api.tokenproviders.JwtTokenProvider;
 import org.apache.coyote.Response;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -25,9 +28,13 @@ public class DbUserController {
     @Autowired
     DbUserService dbUserService;
 
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
+
     @GetMapping("search")
-    ResponseEntity<List<DbUser>> getSearchedUsers(@RequestParam("username") String searchQuery) {
-        List users = dbUserService.getSearchedUsers(searchQuery);
+    ResponseEntity<List<DbUser>> getSearchedUsers(@RequestParam("username") String searchQuery, HttpServletRequest request) {
+        String username = jwtTokenProvider.getUsername(request);
+        List users = dbUserService.getSearchedUsers(searchQuery, username);
 
         if(users != null){
             if(users.size() != 0){
