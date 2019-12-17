@@ -25,7 +25,7 @@
             </div>
             <p>Metascore: {{movie.Metascore}}/100</p>
             <p>ImdbRating: {{movie.imdbRating}}/10</p>
-            <v-btn v-on:click="bok">Book film</v-btn>
+            <v-btn v-on:click="book">Book film</v-btn>
           </v-col>
         </v-row>
       </div>
@@ -53,8 +53,8 @@ export default {
     this.getMovie();
   },
   methods: {
-    bok() {
-      //TODO
+    book() {
+      this.$router.push({name: 'createEvent', params: {title: this.movie.Title}})
     },
     async getMovie() { 
       let url = window.location.origin + "/api/movie/?t=" + this.$route.params.title;

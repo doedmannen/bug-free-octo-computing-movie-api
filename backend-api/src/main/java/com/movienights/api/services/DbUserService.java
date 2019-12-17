@@ -37,6 +37,10 @@ public class DbUserService {
         return userRepo.findAll();
     }
 
+    public List<DbUser> getSearchedUsers(String searchQuery) {
+        return userRepo.findDbUsersByUsernameIsLikeIgnoreCase(searchQuery);
+    }
+
     public DbUser getOneUser(String id) {
         try {
             ObjectId _id = new ObjectId(id);
