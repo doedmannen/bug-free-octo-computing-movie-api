@@ -3,15 +3,15 @@
     <v-container fluid>
       <v-row>
         <!-- <<<< LEFT SIDE >>>> -->
-        <v-col cols="6">
+        <v-col cols="5">
           <v-card color="blue-grey darken-3" dark>
             <v-img
-              height="200"
+              height="250"
               src="http://images.summitmedia-digital.com/smartpar/images/2017/12/30/movienight-web.jpg"
             >
               <v-row>
                 <v-row class="pa-4" align="center" justify="center">
-                  <v-col cols="6" class="text-center">
+                  <v-col cols="8" class="text-center">
                     <h3 class="headline">Create a new movie night</h3>
                   </v-col>
                 </v-row>
@@ -38,7 +38,6 @@
                           :input-value="data.selected"
                           close
                           @click="data.select"
-                          @click:close="remove(data.item)"
                         >
                           <v-avatar left>
                             <v-icon>mdi-filmstrip</v-icon>
@@ -93,7 +92,7 @@
           </v-card>
         </v-col>
         <!-- >>>> RIGHT SIDE <<<< -->
-        <v-col cols="6">
+        <v-col cols="7">
           <vue-cal
             class="vuecal--blue-theme"
             default-view="week"
@@ -158,6 +157,13 @@ export default {
     selectedMovie: ""
   }),
 
+  mounted() {
+    if (this.$route.params.title) {
+      this.selectedMovie = this.$route.params.title;
+      this.items2 = [{ Title: this.selectedMovie }];
+    }
+    console.log(this.$route);
+  },
   computed: {
     getSearch() {
       return this.searchUsers;
@@ -167,7 +173,7 @@ export default {
       return this.searchMovie;
     },
 
-    validateEmpty(){
+    validateEmpty() {
       return this.peopleToInvite.length !== 0 && this.selectedMovie !== "";
     }
   },
@@ -306,7 +312,7 @@ export default {
 
 <style>
 .headline {
-  background-color: rgba(0, 0, 0, 0.575);
+  background-color: rgba(0, 0, 0, 0.664);
   padding: 10px;
   color: whitesmoke;
   border-radius: 20px;
