@@ -25,6 +25,20 @@ public class DbUserController {
     @Autowired
     DbUserService dbUserService;
 
+    @GetMapping("search")
+    ResponseEntity<List<DbUser>> getSearchedUsers(@RequestParam("username") String searchQuery) {
+        List users = dbUserService.getSearchedUsers(searchQuery);
+
+        if(users != null){
+            if(users.size() != 0){
+                return new ResponseEntity<>(users, HttpStatus.OK);
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No users with that name exists");
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @GetMapping
     ResponseEntity<List<DbUser>> getAllUsers() {
         List users = dbUserService.getAllUsers();

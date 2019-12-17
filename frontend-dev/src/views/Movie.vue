@@ -7,7 +7,7 @@
         <h1>{{movie.Title}}</h1>
         <v-row>
           <v-col cols="5">
-            <v-img :src="movie.Poster"></v-img>
+            <v-img :src="movie.Poster === 'N/A' ? `https://image.shutterstock.com/image-vector/no-image-available-icon-template-260nw-1036735678.jpg` : movie.Poster"></v-img>
           </v-col>
           <v-col cols="5">
             <p>Time: {{movie.Runtime}}</p>
@@ -25,7 +25,7 @@
             </div>
             <p>Metascore: {{movie.Metascore}}/100</p>
             <p>ImdbRating: {{movie.imdbRating}}/10</p>
-            <v-btn v-on:click="bok">Book film</v-btn>
+            <v-btn v-on:click="book">Book film</v-btn>
           </v-col>
         </v-row>
       </div>
@@ -53,8 +53,8 @@ export default {
     this.getMovie();
   },
   methods: {
-    bok() {
-      //TODO
+    book() {
+      this.$router.push({name: 'createEvent', params: {title: this.movie.Title}})
     },
     async getMovie() { 
       let url = window.location.origin + "/api/movie/?t=" + this.$route.params.title;

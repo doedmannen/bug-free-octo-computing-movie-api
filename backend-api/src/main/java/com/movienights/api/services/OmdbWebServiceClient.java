@@ -21,8 +21,8 @@ import java.util.Optional;
 @Service
 public class OmdbWebServiceClient {
 
-    private final String SEARCH_URL = "https://www.omdbapi.com/?t=TITLE&apikey=APIKYE";
-    private final String SEARCH =  "http://www.omdbapi.com/?apikey=APIKYE&s=SEARCHWORD&page=PAGENR";
+    private final String SEARCH_URL = "https://www.omdbapi.com/?t=TITLE&apikey=APIKYE&type=movie";
+    private final String SEARCH =  "http://www.omdbapi.com/?apikey=APIKYE&s=SEARCHWORD&page=PAGENR&type=movie";
 
     @Autowired
     MovieRepo movieRepo;

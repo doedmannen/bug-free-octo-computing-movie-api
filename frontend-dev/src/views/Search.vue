@@ -68,7 +68,7 @@ export default {
     this.max= Math.ceil(this.max)
     },
     goTo(title){
-      window.location.href = window.location.origin + "/movie/"+title;
+      this.$router.push({path: '/movie/'+title.split("/").join(" ")});
     },
     search(){
       this.getSearch();

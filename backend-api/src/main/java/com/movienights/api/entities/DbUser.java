@@ -83,6 +83,7 @@ public class DbUser {
         this.password = password;
     }
 
+
     public Set<String> getRoles() {
         return roles;
     }
@@ -91,34 +92,42 @@ public class DbUser {
         this.roles = roles;
     }
 
+    @JsonIgnore
     public String getAccessToken() {
         return accessToken;
     }
 
+    @JsonSetter("accessToken")
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
     }
 
+    @JsonIgnore
     public String getRefreshToken() {
         return refreshToken;
     }
 
+    @JsonSetter("refreshToken")
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
 
+    @JsonIgnore
     public Long getExpiresAt() {
         return expiresAt;
     }
 
+    @JsonSetter("expiresAt")
     public void setExpiresAt(Long expiresAt) {
         this.expiresAt = expiresAt;
     }
 
+    @JsonIgnore
     public UUID getJwtSalt() {
         return jwtSalt;
     }
 
+    @JsonSetter("jwtSalt")
     public void setJwtSalt(UUID jwtSalt) {
         this.jwtSalt = jwtSalt;
     }
