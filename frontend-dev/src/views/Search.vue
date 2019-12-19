@@ -114,6 +114,7 @@ export default {
         this.exist = true;
         this.getmaxpage();
       } else {
+        this.searchResult = {};
         this.exist = false;
       }
       this.loaded = true;
