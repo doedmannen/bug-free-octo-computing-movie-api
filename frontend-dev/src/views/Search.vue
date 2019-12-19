@@ -1,17 +1,19 @@
 <template>
   <div>
     <v-container fluid>
-      <v-row>
+      <v-row justify="center">
         <div class="searchbar">
-          <v-text-field
-            @keyup.enter="search"
-            label="Search"
-            v-model="input"
-            append-icon="mdi-magnify"
-            @click:append="search"
-            :rules="mincharacters"
-          ></v-text-field>
-          <v-btn @click="search" class="search-button">Search</v-btn>
+          <v-row align="center">
+            <v-text-field
+              @keyup.enter="search"
+              label="Search"
+              v-model="input"
+              append-icon="mdi-magnify"
+              @click:append="search"
+              :rules="mincharacters"
+            ></v-text-field>
+            <v-btn @click="search" class="search-button mb-2 ml-3">Search</v-btn>
+          </v-row>
           <div v-if="loaded && exist">
             <v-btn @click="previouspage" :disabled="page === 1">previous</v-btn>
             {{page}}/
